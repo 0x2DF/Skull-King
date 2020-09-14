@@ -1,0 +1,25 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-align-justify"></i> Lobby <code> [ {{room.code}} ]</code>
+            </div>
+            <div class="card-body" id="user-container">
+                <table class="table table-striped" >
+                    <thead>
+                        <tr>
+                            <th>Handle</th>
+                            <!-- <th>Date registered</th> -->
+                            <th>Role</th>
+                            <!-- <th>Status</th> -->
+                        </tr>
+                    </thead>
+                    <tbody id="user-list">
+
+                    </tbody>
+                </table>
+                <button class="btn btn-block btn-outline-primary" id="start-lobby-btn" (click)="StartLobby()">Start</button>
+            </div>
+        </div>
+    </div>
+</div>

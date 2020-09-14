@@ -1,0 +1,44 @@
+    <div class="app-body">
+        <main class="main d-flex align-items-center">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-8 mx-auto">
+                <div class="card-group">
+                  <div class="card p-4">
+                    <div class="card-body">
+                      <form>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="icon-user"></i></span>
+                          </div>
+                          <input id="inputRoomCode" type="text" class="form-control" placeholder="Room Code" #roomCode>
+                        </div>
+                        
+                        <div class="row">
+                          <div class="col-12">
+                            <button type="button" class="btn btn-lg btn-primary btn-block" (click)="findRoom(roomCode.value)">Enter Room</button>
+                          </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                          <div class="col-12">
+                            <button type="button" class="btn btn-lg btn-primary btn-block"(click)="createRoom()">New Room</button>
+                          </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                          <div class="col-12">
+                            <button type="button" class="btn btn-lg btn-primary btn-block"(click)="howToPlay()">How To Play</button>
+                          </div>
+                        </div>
+
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+      
