@@ -39,8 +39,7 @@ export class GameDetailsComponent implements OnInit {
           const type = document.createElement('div');
           const player = document.createElement('div');
 
-          avatar.className = "avatar float-left";
-          img.className = "img-avatar";
+          avatar.className = "float-left";
           img.src = `assets/images/small/${trick.id}.jpg`;
           avatar.append(img);
 
