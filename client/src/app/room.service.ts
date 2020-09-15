@@ -33,6 +33,7 @@ export class RoomService{
     ) {}
 
   createRoom(){
+    console.log("creating new room");
     this.socketService.sendSocketData('create-room', 'create');
     this.socketService.getSocketData('create-room').subscribe(
       data =>
@@ -62,8 +63,8 @@ export class RoomService{
     this.socketService.getSocketData('refresh-room').subscribe(
       data =>
       {
-        // console.log("room service [join-room]");
-        // console.log(data.room);
+        console.log("room service [join-room]");
+        console.log(data.room);
         if (data.room){
           this.room.next(data.room);
         

@@ -1,14 +1,44 @@
 var Deck = require("./Models/Deck")
 
-let app = require('express')();
+/*
+const express = require('express');
+const app = express();
+// let express = require('express')();
+// let http = require('http').createServer(express);
 let http = require('http').createServer(app);
 let io = require('socket.io')(http);
 
 const PORT = 3000;
 http.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
-  console.log(`http://localhost:${PORT}`);
+  console.log(`https://skull-king-app.herokuapp.com:${PORT}`);
 });
+
+const path = require('path');
+// const app = express();
+app.use(express.static(__dirname + '/Public/client'));
+app.get('/*', function(req,res) {
+res.sendFile(path.join(__dirname+'/Public/client/index.html'));});
+// app.listen(process.env.PORT || 8080);
+app.listen(process.env.PORT || 3000);
+*/
+
+const PORT = process.env.PORT || 3000;
+const INDEX = '/Public/client/index.html';
+
+const express = require('express');
+const socketIO = require('socket.io');
+const path = require('path');
+
+const server = express()
+  .use(express.static(__dirname + '/Public/client'))
+  .get('/*', function(req,res) {
+    res.sendFile(path.join(__dirname+'/Public/client/index.html'));})
+  .listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+const io = socketIO(server);
+
+
 
 const ROOM_CODE_LEN = 5;
 const ROOM_TTL = 900;
@@ -537,24 +567,31 @@ function updateHand(socket_id, room_code){
                     value: private_games[room_code].players[users[socket_id].handle].hand[t].value, 
                     type: private_games[room_code].players[users[socket_id].handle].hand[t].type, 
                     valid: private_games[room_code].players[users[socket_id].handle].hand[t].valid }
-                if (validTrick(temp_trick, room_code))
-                {
-                    temp_trick.valid = true;
-                    if (['Kraken', 'Coins', 'Wildcard'].includes(temp_trick.type) == false){
-                        private_games[room_code].players[users[socket_id].handle].valid_play = true;
-                    }
-                }else{
-                    temp_trick.valid = false;
+                // if (validTrick(temp_trick, room_code))
+                // {
+                //     temp_trick.valid = true;
+                //     if (['Kraken', 'Coins', 'Wildcard'].includes(temp_trick.type) == false){
+                //         private_games[room_code].players[users[socket_id].handle].valid_play = true;
+                //     }
+                // }else{
+                //     temp_trick.valid = false;
+                // }
+                if ((temp_trick.type == games[room_code].winner_trick.trick.type) ||
+                    validTrick(temp_trick, room_code) == false){
+                    private_games[room_code].players[users[socket_id].handle].valid_play = true;
                 }
+                // }else if (validTrick(temp_trick, room_code) == false){
+                //     temp_trick.valid = false;
+                // }
                 hands[socket_id].push(temp_trick);
             }
 
             // No valid play = can play any card
-            if (private_games[room_code].players[users[socket_id].handle].valid_play == false){
-                for (t in hands[socket_id]){
-                    hands[socket_id][t].valid = true;
-                }
-            }
+            // if (private_games[room_code].players[users[socket_id].handle].valid_play == false){
+            //     for (t in hands[socket_id]){
+            //         hands[socket_id][t].valid = true;
+            //     }
+            // }
 
             // console.log(hands[socket_id]);
         // }
@@ -587,7 +624,7 @@ function superiorTrick(trick, room_code){
             if (['Escape', 'Loot'].includes(trick.type)) return false;
             else return true;
         case 'Kraken':
-            return false;
+            return true;
         case 'Pirate':
             if (trick.type == 'Skull King') return true;
             break;
