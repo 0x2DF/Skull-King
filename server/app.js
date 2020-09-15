@@ -556,7 +556,7 @@ function updateHand(socket_id, room_code){
         // console.log(`player_index : ${player_index}`);
         // console.log(`games[room_code].to_play : ${games[room_code].to_play}`);
         // console.log(`( (player_index + 1 )% (games[room_code].players.length)) : ${((player_index + 1) % games[room_code].players.length)}`);
-        // if (player_index == games[room_code].to_play || ((player_index + 1) % games[room_code].players.length) == games[room_code].to_play){
+        if (player_index == games[room_code].to_play || ((player_index + 1) % games[room_code].players.length) == games[room_code].to_play){
             console.log(`Updating ${users[socket_id].handle}'s hand`);
             hands[socket_id] = [];
             private_games[room_code].players[users[socket_id].handle].valid_play = false;
@@ -567,55 +567,50 @@ function updateHand(socket_id, room_code){
                     value: private_games[room_code].players[users[socket_id].handle].hand[t].value, 
                     type: private_games[room_code].players[users[socket_id].handle].hand[t].type, 
                     valid: private_games[room_code].players[users[socket_id].handle].hand[t].valid }
-                // if (validTrick(temp_trick, room_code))
-                // {
-                //     temp_trick.valid = true;
-                //     if (['Kraken', 'Coins', 'Wildcard'].includes(temp_trick.type) == false){
-                //         private_games[room_code].players[users[socket_id].handle].valid_play = true;
-                //     }
-                // }else{
-                //     temp_trick.valid = false;
-                // }
-                if ((temp_trick.type == games[room_code].winner_trick.trick.type) ||
-                    validTrick(temp_trick, room_code) == false){
-                    private_games[room_code].players[users[socket_id].handle].valid_play = true;
+                if (validTrick(temp_trick, room_code))
+                {
+                    temp_trick.valid = true;
+                    if (['Kraken', 'Loot', 'Escape'].includes(temp_trick.type) == false){
+                        private_games[room_code].players[users[socket_id].handle].valid_play = true;
+                    }
+                }else{
+                    temp_trick.valid = false;
                 }
-                // }else if (validTrick(temp_trick, room_code) == false){
-                //     temp_trick.valid = false;
-                // }
                 hands[socket_id].push(temp_trick);
             }
 
-            // No valid play = can play any card
-            // if (private_games[room_code].players[users[socket_id].handle].valid_play == false){
-            //     for (t in hands[socket_id]){
-            //         hands[socket_id][t].valid = true;
-            //     }
-            // }
+            // No valid play : can play any card
+            if (private_games[room_code].players[users[socket_id].handle].valid_play == false){
+                for (t in hands[socket_id]){
+                    hands[socket_id][t].valid = true;
+                }
+            }
 
             // console.log(hands[socket_id]);
-        // }
+        }
     }else {
         // console.log("unknown state whilst updating hand");
     }
 }
 function superiorTrick(trick, room_code){
     if (games[room_code].winning_trick == null) return true;
+    if (trick.type = 'Kraken') return true;
+
     switch (games[room_code].winning_trick.trick.type){
         case 'Yellow Suit':
-            if (['Skull King', 'Mermaid', 'Pirate', 'Jolly Ranger', 'Kraken'].includes(trick.type) ||
+            if (['Skull King', 'Mermaid', 'Pirate', 'Jolly Ranger'].includes(trick.type) ||
                 (trick.type == 'Yellow Suit' && trick.value > games[room_code].winning_trick.trick.value)) return true;
             break;
         case 'Purple Suit':
-            if (['Skull King', 'Mermaid', 'Pirate', 'Jolly Ranger', 'Kraken'].includes(trick.type) ||
+            if (['Skull King', 'Mermaid', 'Pirate', 'Jolly Ranger'].includes(trick.type) ||
                 (trick.type == 'Purple Suit' && trick.value > games[room_code].winning_trick.trick.value)) return true;
             break;
         case 'Green Suit':
-            if (['Skull King', 'Mermaid', 'Pirate', 'Jolly Ranger', 'Kraken'].includes(trick.type) ||
+            if (['Skull King', 'Mermaid', 'Pirate', 'Jolly Ranger'].includes(trick.type) ||
                 (trick.type == 'Green Suit' && trick.value > games[room_code].winning_trick.trick.value)) return true;
             break;
         case 'Jolly Ranger':
-            if (['Skull King', 'Mermaid', 'Pirate', 'Kraken'].includes(trick.type) ||
+            if (['Skull King', 'Mermaid', 'Pirate'].includes(trick.type) ||
                 (trick.type == 'Jolly Ranger' && 
                  trick.value > games[room_code].winning_trick.trick.value)) return true;
             break;
@@ -624,7 +619,7 @@ function superiorTrick(trick, room_code){
             if (['Escape', 'Loot'].includes(trick.type)) return false;
             else return true;
         case 'Kraken':
-            return true;
+            return false;
         case 'Pirate':
             if (trick.type == 'Skull King') return true;
             break;
@@ -650,15 +645,19 @@ function validTrick(trick, room_code){
     switch (games[room_code].winning_trick.trick.type){
         case 'Yellow Suit':
             if (['Purple Suit', 'Green Suit'].includes(trick.type)) return false;
+            if (trick.type == 'Yellow Suit' && trick.value < games[room_code].winning_trick.trick.value) return false;
             break;
         case 'Purple Suit':
             if (['Yellow Suit', 'Green Suit'].includes(trick.type)) return false;
+            if (trick.type == 'Purple Suit' && trick.value < games[room_code].winning_trick.trick.value) return false;
             break;
         case 'Green Suit':
             if (['Yellow Suit', 'Purple Suit'].includes(trick.type)) return false;
+            if (trick.type == 'Green Suit' && trick.value < games[room_code].winning_trick.trick.value) return false;
             break;
         case 'Jolly Ranger':
             if (['Purple Suit', 'Yellow Suit', 'Green Suit'].includes(trick.type)) return false;
+            if (trick.type == 'Jolly Ranger' && trick.value < games[room_code].winning_trick.trick.value) return false;
             break;
         case 'Escape':
         case 'Loot':
@@ -677,6 +676,7 @@ function validTrick(trick, room_code){
     return true;
 }
 
+// Updates score for current round
 function updateScore(room_code)
 {
     for (p in games[room_code].players){
@@ -686,10 +686,66 @@ function updateScore(room_code)
         if (player.bet == player.tricks_won)
         {
             if (player.bet == 0) games[room_code].players[p].score += games[room_code].round * 10;
-            else games[room_code].players[p].score += player.bet * 10;
+            else games[room_code].players[p].score += player.bet * 20;
+
+            bonusPoints(room_code, p);
+
         }else{
             if (player.bet == 0) games[room_code].players[p].score -= games[room_code].round * 10;
             else games[room_code].players[p].score -= Math.abs(player.bet - player.tricks_won) * 10;
+        }
+    }
+}
+
+function bonusPoints(room_code, player_index)
+{
+    let player = games[room_code].players[player_index];
+
+    // private_games[room_code].rounds[ games[room_code].round ].cards_played[sub_round].winner_trick
+    // private_games[room_code].rounds[ games[room_code].round ].cards_played[sub_round].cards
+
+    for (sub_round_idx in private_games[room_code].rounds[ games[room_code].round ].cards_played){
+        let sub_round = private_games[room_code].rounds[ games[room_code].round ].cards_played[sub_round_idx];
+        
+        // if player won this subround
+        if (sub_round.winner_trick.player_handle == player.handle){
+            for (card_idx in sub_round.cards){
+                let trick = sub_round.cards[card_idx];
+                
+                // skip winner trick
+                if (trick.id != sub_round.winner_trick.trick.id){
+                    switch (trick.type){
+                        case 'Pirate':
+                            if (sub_round.winner_trick.trick.type == 'Skull King'){
+                                games[room_code].players[player_index].score += 30;
+                            }
+                            break;
+                        case 'Jolly Ranger':
+                            if (trick.value == 14){
+                                games[room_code].players[player_index].score += 20;
+                            }
+                            break;
+                        case 'Green Suit':
+                        case 'Yellow Suit':
+                        case 'Purple Suit':
+                            if (trick.value == 14){
+                                games[room_code].players[player_index].score += 10;
+                            }
+                            break;
+                        case 'Skull King':
+                            if (sub_round.winner_trick.trick.type == 'Mermaid'){
+                                games[room_code].players[player_index].score += 50;
+                            }
+                            break;
+                        // Loot card -> Alliances
+                        default:
+                            break;
+                    }
+                }else{
+                    // Bonus only applies if the trick was captured.
+                    break;
+                }
+            }
         }
     }
 }
