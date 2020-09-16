@@ -1,9 +1,9 @@
 var Deck = require("./Models/Deck")
 
-/*
+
 const express = require('express');
-const app = express();
 // let express = require('express')();
+const app = express();
 // let http = require('http').createServer(express);
 let http = require('http').createServer(app);
 let io = require('socket.io')(http);
@@ -14,29 +14,29 @@ http.listen(PORT, () => {
   console.log(`https://skull-king-app.herokuapp.com:${PORT}`);
 });
 
-const path = require('path');
+// const path = require('path');
 // const app = express();
-app.use(express.static(__dirname + '/Public/client'));
-app.get('/*', function(req,res) {
-res.sendFile(path.join(__dirname+'/Public/client/index.html'));});
+// app.use(express.static(__dirname + '/Public/client'));
+// app.get('/*', function(req,res) {
+// res.sendFile(path.join(__dirname+'/Public/client/index.html'));});
 // app.listen(process.env.PORT || 8080);
-app.listen(process.env.PORT || 3000);
-*/
+// app.listen(process.env.PORT || 3000);
 
-const PORT = process.env.PORT || 3000;
-const INDEX = '/Public/client/index.html';
 
-const express = require('express');
-const socketIO = require('socket.io');
-const path = require('path');
+// const PORT = process.env.PORT || 3000;
+// const INDEX = '/Public/client/index.html';
 
-const server = express()
-  .use(express.static(__dirname + '/Public/client'))
-  .get('/*', function(req,res) {
-    res.sendFile(path.join(__dirname+'/Public/client/index.html'));})
-  .listen(PORT, () => console.log(`Listening on ${PORT}`));
+// const express = require('express');
+// const socketIO = require('socket.io');
+// const path = require('path');
 
-const io = socketIO(server);
+// const server = express()
+//   .use(express.static(__dirname + '/Public/client'))
+//   .get('/*', function(req,res) {
+//     res.sendFile(path.join(__dirname+'/Public/client/index.html'));})
+//   .listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+// const io = socketIO(server);
 
 
 
@@ -194,7 +194,7 @@ io.on("connection", socket => {
         if (socket.id in users){
             let room_code = users[socket.id].room_code;
             if (room_code && room_code in games){
-                updateHand(socket.id, room_code);
+                updateHand(room_code, socket.id);
                 socket.emit("refresh-hand", {hand : hands[socket.id]});
             }
         }
@@ -228,16 +228,18 @@ io.on("connection", socket => {
 
                 if (games[room_code].to_play == player_index){
                     let card_index = getCardIndex(room_code, socket.id, data.trick);
-                    let is_valid = validTrick(data.trick, room_code);
+                    // let is_valid = validTrick(room_code, data.trick);
                     // console.log(`is_valid [play-trick] : ${is_valid}`);
                     // console.log(`valid-play: ${private_games[room_code].players[ users[socket.id].handle ].valid_play}`);
 
-                    if (card_index > -1 && (is_valid || private_games[room_code].players[ users[socket.id].handle ].valid_play == false)){
+                    // if (card_index > -1 && (is_valid || private_games[room_code].players[ users[socket.id].handle ].valid_play == false)){
+                    if (card_index > -1){
                         let sub_round = getSubRound(room_code);
 
                         updateWinningTrick(room_code, socket.id, card_index);
                         
                         playTrick(room_code, sub_round, socket.id, card_index);
+                        updateHandAux(room_code, socket.id);
 
                         games[room_code].to_play = (games[room_code].to_play + 1) % games[room_code].players.length;
 
@@ -337,15 +339,15 @@ function playTrick(room_code, sub_round, socket_id, card_index){
 }
 
 function updateWinningTrick(room_code, socket_id, card_index){
-    // console.log("------------UPDATE WINNING TRICk-------------");
-    // console.log(`game[${room_code}]:`);
-    // console.log(games[room_code]);
+    console.log("------------UPDATE WINNING TRICk-------------");
+    console.log(`game[${room_code}]:`);
+    console.log(games[room_code]);
     let trick = private_games[room_code].players[ users[socket_id].handle ].hand[card_index];
 
-    // console.log("trick:");
-    // console.log(trick);
+    console.log("trick:");
+    console.log(trick);
 
-    if (games[room_code].winning_trick == null || superiorTrick(trick, room_code)){
+    if (games[room_code].winning_trick == null || superiorTrick(room_code, trick)){
         games[room_code].winning_trick = {
             trick : {
                 id: trick.id,
@@ -356,8 +358,8 @@ function updateWinningTrick(room_code, socket_id, card_index){
             },
             player_handle : users[socket_id].handle
         };
-        // console.log("winning trick: ");
-        // console.log(games[room_code].winning_trick);
+        console.log("New winning trick: ");
+        console.log(games[room_code].winning_trick);
     }
 }
 
@@ -397,7 +399,6 @@ function updateSubRoundWinnerTrick(room_code, sub_round){
 function initGame(room_code) {
     
     let n = Math.floor(Math.random() * rooms[room_code].users.length);
-
     games[room_code] = {
         room_code : room_code,
         state : "betting",
@@ -541,7 +542,7 @@ function dealCards(room_code){
     }
 }
 
-function updateHand(socket_id, room_code){
+function updateHand(room_code, socket_id){
 
     if (games[room_code].state == "betting"){
         // console.log("------------UPDATE HAND [BETTING]-------------");
@@ -553,48 +554,49 @@ function updateHand(socket_id, room_code){
     }else if (games[room_code].state == "playing"){
         // console.log("------------UPDATE HAND [PLAYING]-------------");
         let player_index = getPlayerIndex(room_code, users[socket_id].handle);
-        // console.log(`player_index : ${player_index}`);
-        // console.log(`games[room_code].to_play : ${games[room_code].to_play}`);
-        // console.log(`( (player_index + 1 )% (games[room_code].players.length)) : ${((player_index + 1) % games[room_code].players.length)}`);
-        if (player_index == games[room_code].to_play || ((player_index + 1) % games[room_code].players.length) == games[room_code].to_play){
-            console.log(`Updating ${users[socket_id].handle}'s hand`);
-            hands[socket_id] = [];
-            private_games[room_code].players[users[socket_id].handle].valid_play = false;
-
-            for (t in private_games[room_code].players[users[socket_id].handle].hand){
-                let temp_trick = {id: private_games[room_code].players[users[socket_id].handle].hand[t].id,
-                    name: private_games[room_code].players[users[socket_id].handle].hand[t].name,
-                    value: private_games[room_code].players[users[socket_id].handle].hand[t].value, 
-                    type: private_games[room_code].players[users[socket_id].handle].hand[t].type, 
-                    valid: private_games[room_code].players[users[socket_id].handle].hand[t].valid }
-                if (validTrick(temp_trick, room_code))
-                {
-                    temp_trick.valid = true;
-                    if (['Kraken', 'Loot', 'Escape'].includes(temp_trick.type) == false){
-                        private_games[room_code].players[users[socket_id].handle].valid_play = true;
-                    }
-                }else{
-                    temp_trick.valid = false;
-                }
-                hands[socket_id].push(temp_trick);
-            }
-
-            // No valid play : can play any card
-            if (private_games[room_code].players[users[socket_id].handle].valid_play == false){
-                for (t in hands[socket_id]){
-                    hands[socket_id][t].valid = true;
-                }
-            }
-
-            // console.log(hands[socket_id]);
+        if (player_index == games[room_code].to_play){
+            // console.log(`Updating ${users[socket_id].handle}'s hand`);
+            updateHandAux(room_code, socket_id);
         }
     }else {
         // console.log("unknown state whilst updating hand");
     }
 }
-function superiorTrick(trick, room_code){
+
+function updateHandAux(room_code, socket_id){
+    hands[socket_id] = [];
+    private_games[room_code].players[users[socket_id].handle].valid_play = false;
+
+    for (t in private_games[room_code].players[users[socket_id].handle].hand){
+        let temp_trick = {id: private_games[room_code].players[users[socket_id].handle].hand[t].id,
+            name: private_games[room_code].players[users[socket_id].handle].hand[t].name,
+            value: private_games[room_code].players[users[socket_id].handle].hand[t].value, 
+            type: private_games[room_code].players[users[socket_id].handle].hand[t].type, 
+            valid: private_games[room_code].players[users[socket_id].handle].hand[t].valid }
+        if (validTrick(room_code, temp_trick))
+        {
+            temp_trick.valid = true;
+            if (['Kraken', 'Loot', 'Escape'].includes(temp_trick.type) == false){
+                private_games[room_code].players[users[socket_id].handle].valid_play = true;
+            }
+        }else{
+            temp_trick.valid = false;
+        }
+        hands[socket_id].push(temp_trick);
+    }
+
+    // No valid play : can play any card
+    if (private_games[room_code].players[users[socket_id].handle].valid_play == false){
+        for (t in hands[socket_id]){
+            hands[socket_id][t].valid = true;
+        }
+    }
+}
+
+
+function superiorTrick(room_code, trick){
     if (games[room_code].winning_trick == null) return true;
-    if (trick.type = 'Kraken') return true;
+    if (trick.type == 'Kraken') return true;
 
     switch (games[room_code].winning_trick.trick.type){
         case 'Yellow Suit':
@@ -640,7 +642,8 @@ function superiorTrick(trick, room_code){
     return false;
 }
 
-function validTrick(trick, room_code){
+function validTrick(room_code, trick){
+    console.log("-------------VALID TRICK-------------");
     if (games[room_code].winning_trick == null) return true;
     switch (games[room_code].winning_trick.trick.type){
         case 'Yellow Suit':
@@ -656,7 +659,19 @@ function validTrick(trick, room_code){
             if (trick.type == 'Green Suit' && trick.value < games[room_code].winning_trick.trick.value) return false;
             break;
         case 'Jolly Ranger':
-            if (['Purple Suit', 'Yellow Suit', 'Green Suit'].includes(trick.type)) return false;
+            if (['Purple Suit', 'Yellow Suit', 'Green Suit'].includes(trick.type)){
+                sub_round_idx = getSubRound(room_code);
+                console.log(sub_round_idx);
+                let sub_round = private_games[room_code].rounds[ games[room_code].round ].cards_played[sub_round_idx];
+                console.log(sub_round);
+                // check if round is being played with Jolly Ranger
+                for (card_idx in sub_round.cards){
+                    let prev_trick = sub_round.cards[card_idx];
+                    if (prev_trick.type == 'Jolly Ranger') return false;
+                    else if (['Purple Suit', 'Yellow Suit', 'Green Suit'].includes(prev_trick.type)) return true;
+                    // else the only other 2 valid cards must have been wildcards => continue searching
+                }
+            }
             if (trick.type == 'Jolly Ranger' && trick.value < games[room_code].winning_trick.trick.value) return false;
             break;
         case 'Escape':

@@ -10,8 +10,8 @@ export class SocketService{
   private socket;
 
   constructor() { 
-    // this.socket = io('http://localhost:3000')
-    this.socket = io();
+    this.socket = io('http://localhost:3000')
+    // this.socket = io();
   }
 
   observer
