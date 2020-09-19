@@ -5,17 +5,17 @@
                 <i class="fa fa-align-justify"></i> List of tricks
             </div>
             <div class="row">
-                <div class="col-3 col-lg-3" *ngFor="let trick of hand">
-                    <div class="card" (click)="playTrick(trick)">
-                        <div class="card-bodyclearfix">
-                            <div class="float-left">
-                                <img src="assets/images/small/{{trick.id}}.jpg">
-                            </div>
-                            <div class="h5 text-danger mb-0 pt-3">{{trick.name}}</div>
+                <div class="col-2 col-lg-2" style="min-width: 140px; min-height: 230px;" *ngFor="let trick of hand">
+                    <!-- <div class="card" > -->
+                        <div class="card-body clearfix" (click)="playTrick(trick)">
+                            <!-- <div class="float-left"> -->
+                                <img style="width: 100%; height: 100%;" src="assets/images/small/{{trick.id}}.jpg">
+                            <!-- </div> -->
+                            <!-- <div class="h5 text-danger mb-0 pt-3">{{trick.name}}</div>
                             <div class="text-muted font-weight-bold font-xs">Value: {{trick.value}}</div>
-                            <div class="text-muted font-weight-bold font-xs">Type: {{trick.type}}</div>
+                            <div class="text-muted font-weight-bold font-xs">Type: {{trick.type}}</div> -->
                         </div>
-                    </div>
+                    <!-- </div> -->
                 </div>
             </div>
         </div>

@@ -16,7 +16,6 @@ export class RoomService{
     code : null,
     users : null,
     state : null,
-    ttl : null,
     SK : null
   });
   sharedRoom = this.room.asObservable();

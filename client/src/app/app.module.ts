@@ -7,6 +7,7 @@ import {
 } from '@coreui/angular';
 
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';  
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -54,6 +55,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     FormsModule,
     AppRoutingModule,
     AppHeaderModule,

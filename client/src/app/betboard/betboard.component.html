@@ -5,7 +5,7 @@
   <div class="card-body">
     <div class="row align-items-center">
         <div class="col-2 col-sm-2 col-md-2 col-xl mb-2 mb-xl-0" *ngFor="let round of rounds">
-          <button type="button" class="btn btn-block btn-outline-primary btn-pill" [disabled]="round > game.round" (click)="submitBet(round)">{{round}}</button>
+          <button id="{{round}}_bet_btn" type="button" class="btn btn-block btn-outline-primary btn-brand" [disabled]="round > game.round" (click)="submitBet(round)">{{round}}</button>
         </div>
     </div>
   </div>

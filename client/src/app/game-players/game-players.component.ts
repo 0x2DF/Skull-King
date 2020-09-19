@@ -28,19 +28,30 @@ export class GamePlayersComponent implements OnInit {
       
       this.game.players.forEach((u, i) => {
         const tr = document.createElement('tr');
+        const td_status = document.createElement('td');
         const td_handle = document.createElement('td');
         const td_tricks_won = document.createElement('td');
         const td_bet = document.createElement('td');
         const td_score = document.createElement('td');
-        const span = document.createElement('span');
+        const span_rl = document.createElement('span');
+        const span_tp = document.createElement('span');
+        // const span = document.createElement('span');
 
-        td_handle.innerHTML = `${u.handle}`;
-        td_handle.className = (this.user.handle == u.handle) ? 'my-0 text-primary' : 'my-0';
+        td_status.innerHTML = "";
         if (i == this.game.round_lead){
-          span.innerHTML = 'RL';
-          span.className = "badge badge-info";
+          span_rl.innerHTML = 'Round Leader';
+          span_rl.className = "badge badge-success";
         }
-        td_handle.append(span);
+        td_status.append(span_rl);
+        if (i == this.game.to_play){
+          span_tp.innerHTML = 'To Play';
+          span_tp.className = "badge badge-warning";
+        }
+        td_status.append(span_tp);
+        tr.append(td_status);
+
+        td_handle.innerHTML = `${u.handle} `;
+        td_handle.className = (this.user.handle == u.handle) ? 'my-0 text-primary' : 'my-0';
         tr.append(td_handle);
 
         td_tricks_won.innerHTML = `${u.tricks_won}`;

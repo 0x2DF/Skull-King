@@ -19,6 +19,7 @@ export class GameService {
     to_play : null,
     round_lead : null,
     round : null,
+    sub_round : null,
     total_rounds : null,
     round_time : null,
     bet_time : null,
@@ -29,6 +30,12 @@ export class GameService {
 
   private hand = new BehaviorSubject<Trick[]>([]);
   sharedHand = this.hand.asObservable();
+
+  private sub_round = new BehaviorSubject({
+    winner_trick : null,
+    cards : []
+  });
+  sharedSubRound = this.sub_round.asObservable();
 
   constructor(
     private socketService: SocketService
@@ -52,6 +59,14 @@ export class GameService {
       console.log(data.hand);
       if (data.hand){
         this.hand.next(data.hand);
+      }
+    });
+
+    socket.on('refresh-subround', data => {
+      console.log('game server [updateGame');
+      console.log(data.sub_round);
+      if (data.sub_round){
+        this.sub_round.next(data.sub_round);
       }
     });
   }

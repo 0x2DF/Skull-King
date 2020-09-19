@@ -6,10 +6,20 @@
 - Game Details (settings)
 - Tutorial
 
-- Score details (bonus points)
 - Scoreboard
 - Pirate Skills
-- Tigress
 
 - Game modes
 - Docs
+
+----------------------------------
+[Local Execution]
+Client (local):
+ng serve
+
+Server (local):
+node app.js
+----------------------------------
+[Deploy]
+
+ng build --prod

@@ -35,6 +35,14 @@ export class BetboardComponent implements OnInit {
     if (bet >= 0 && bet <= 10){
       this.gameService.makeBet(bet);
     }
+    for (let r in this.rounds)
+    {
+      let btn = document.getElementById(`${r}_bet_btn`);
+      btn.className = "btn btn-block btn-outline-primary btn-brand";
+      if (bet == Number(r)){
+        btn.className += " active";
+      }
+    }
   }
 
 }

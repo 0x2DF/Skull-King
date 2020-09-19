@@ -111,9 +111,10 @@ io.on("connection", socket => {
 
                     io.to(room_code).emit("refresh-game", { room : games[room_code] });
                 }
-
-                if (rooms[room_code].users.length == 0) delete rooms[room_code];
-                else io.to(room_code).emit("refresh-room", { room : rooms[room_code] });
+                if (rooms[room_code]){
+                    if (rooms[room_code].users.length == 0) delete rooms[room_code];
+                    else io.to(room_code).emit("refresh-room", { room : rooms[room_code] });
+                }
             }
             delete users[socket.id];
         }
@@ -137,7 +138,7 @@ io.on("connection", socket => {
     socket.on("create-room", data => {
         let code = generateRoomCode();
 
-        rooms[code] = { code: code, users: [], state: "waiting", ttl: ROOM_TTL, SK: null };
+        rooms[code] = { code: code, users: [], state: "waiting", SK: null };
 
         socket.emit("create-room", {room : rooms[code]});
     });
@@ -182,6 +183,11 @@ io.on("connection", socket => {
                     initGame(room_code);
                     dealCards(room_code);
 
+                    // setTimeout((room_code, io) => {
+                    //     commitBets(room_code);
+                    //     io.to(room_code).emit("refresh-game", {game : games[room_code]});
+                    // }, games[room_code].bet_timer * 1000, room_code, io);
+
                     io.to(room_code).emit("refresh-room", {room : rooms[room_code]});
                     io.to(room_code).emit("refresh-game", {game : games[room_code]});
                 }
@@ -205,7 +211,6 @@ io.on("connection", socket => {
             let room_code = users[socket.id].room_code;
             if (games[room_code].state == "betting" && (data.bet >= 0 && data.bet <= games[room_code].round)){
                 bet(room_code, socket.id, data.bet);
-                // console.log(`${users[socket.id].handle} bet ${data.bet}`);
 
                 if (allBet(room_code)){
                     commitBets(room_code);
@@ -217,7 +222,7 @@ io.on("connection", socket => {
     });
 
     socket.on("play-trick", data => {
-        // console.log("---------SOCKET---------")
+        // console.log("---------PLAY TRICK SOCKET---------")
         if (socket.id in users){
             let room_code = users[socket.id].room_code;
             // console.log(`${users[socket.id].handle} attempting to play:`)
@@ -228,36 +233,43 @@ io.on("connection", socket => {
 
                 if (games[room_code].to_play == player_index){
                     let card_index = getCardIndex(room_code, socket.id, data.trick);
-                    // let is_valid = validTrick(room_code, data.trick);
+                    let is_valid = hands[socket.id][card_index].valid;
+                    // let is_valid = private_games[room_code].players[ users[socket.id].handle ].hand[card_index].valid;
                     // console.log(`is_valid [play-trick] : ${is_valid}`);
                     // console.log(`valid-play: ${private_games[room_code].players[ users[socket.id].handle ].valid_play}`);
 
-                    // if (card_index > -1 && (is_valid || private_games[room_code].players[ users[socket.id].handle ].valid_play == false)){
-                    if (card_index > -1){
-                        let sub_round = getSubRound(room_code);
+                    if (card_index > -1 && (is_valid || private_games[room_code].players[ users[socket.id].handle ].valid_play == false)){
+
+                        // Set tigress type
+                        if (private_games[room_code].players[ users[socket.id].handle ].hand[card_index].id == 72){
+                            private_games[room_code].players[ users[socket.id].handle ].hand[card_index].type = (data.trick.type == 'Pirate' ? 'Pirate' : 'Escape');
+                        }
 
                         updateWinningTrick(room_code, socket.id, card_index);
                         
-                        playTrick(room_code, sub_round, socket.id, card_index);
+                        playTrick(room_code, socket.id, card_index);
+                        games[room_code].to_play = (games[room_code].to_play + 1) % games[room_code].players.length;
+
                         updateHandAux(room_code, socket.id);
 
-                        games[room_code].to_play = (games[room_code].to_play + 1) % games[room_code].players.length;
 
                         if (games[room_code].to_play == games[room_code].round_lead){
                             // console.log("end sub round");
 
-                            if (sub_round + 1 < games[room_code].round){
-                                updateSubRoundWinnerTrick(room_code, sub_round);
+                            if (games[room_code].sub_round + 1 < games[room_code].round){
+                                updateSubRoundWinnerTrick(room_code);
+                                games[room_code].sub_round += 1;
 
                                 // console.log("next sub round");
-                                initSubRound(room_code, sub_round + 1);
+                                initSubRound(room_code);
 
                             }else{
-                                updateSubRoundWinnerTrick(room_code, sub_round);
+                                updateSubRoundWinnerTrick(room_code);
 
                                 updateScore(room_code);
 
                                 games[room_code].round += 1;
+                                games[room_code].sub_round = 0;
 
                                 if (games[room_code].round > games[room_code].total_rounds){
                                     games[room_code].state = "scoreboard";
@@ -268,13 +280,15 @@ io.on("connection", socket => {
                                     resetRound(room_code);
                                     dealCards(room_code);
                                     games[room_code].state = "betting";
-                                    initSubRound(room_code, 0);
+                                    initSubRound(room_code);
                                 }
                             }
                         }
                         // console.log("-----------REFRESH GAME-----------");
                         // console.log(games[room_code]);
                         io.to(room_code).emit("refresh-game", {game : games[room_code]});
+                        io.to(room_code).emit("refresh-subround", {sub_round : 
+                            private_games[room_code].rounds[ games[room_code].round ].cards_played[ games[room_code].sub_round ]});
                     }else {
                         console.log("Attempting to play invalid trick. (either does not own the trick, or it's an invalid move)");
                     }
@@ -308,21 +322,18 @@ function bet(room_code, socket_id, bet){
 
 function commitBets(room_code){
     for (p in games[room_code].players){
-        games[room_code].players[p].bet = private_games[room_code].rounds[ games[room_code].round ].bets[ games[room_code].players[p].handle ];
+        let bet = private_games[room_code].rounds[ games[room_code].round ].bets[ games[room_code].players[p].handle ];
+        if (bet == null) {
+            games[room_code].players[p].bet = 0;
+        }else{
+            games[room_code].players[p].bet = bet
+        }
     }
 }
 
-function getSubRound(room_code){
-    let curr_player_handle = games[room_code].players[games[room_code].to_play].handle;
-    return games[room_code].round - private_games[room_code].players[curr_player_handle].hand.length;
-}
-
-function playTrick(room_code, sub_round, socket_id, card_index){
-    // console.log("------------PLAY TRICK-------------");
+function playTrick(room_code, socket_id, card_index){
 
     let trick = private_games[room_code].players[ users[socket_id].handle ].hand[card_index];
-    // console.log("Playing trick [playTrick]:");
-    // console.log(trick);
     let played_trick = { 
                         trick : {
                             id: trick.id, 
@@ -335,17 +346,17 @@ function playTrick(room_code, sub_round, socket_id, card_index){
                         };
 
     private_games[room_code].players[ users[socket_id].handle ].hand.splice(card_index, 1);
-    private_games[room_code].rounds[ games[room_code].round ].cards_played[sub_round].cards.push(played_trick);
+    private_games[room_code].rounds[ games[room_code].round ].cards_played[ games[room_code].sub_round ].cards.push(played_trick);
 }
 
 function updateWinningTrick(room_code, socket_id, card_index){
-    console.log("------------UPDATE WINNING TRICk-------------");
-    console.log(`game[${room_code}]:`);
-    console.log(games[room_code]);
+    // console.log("------------UPDATE WINNING TRICk-------------");
+    // console.log(`game[${room_code}]:`);
+    // console.log(games[room_code]);
     let trick = private_games[room_code].players[ users[socket_id].handle ].hand[card_index];
 
-    console.log("trick:");
-    console.log(trick);
+    // console.log("trick:");
+    // console.log(trick);
 
     if (games[room_code].winning_trick == null || superiorTrick(room_code, trick)){
         games[room_code].winning_trick = {
@@ -358,12 +369,12 @@ function updateWinningTrick(room_code, socket_id, card_index){
             },
             player_handle : users[socket_id].handle
         };
-        console.log("New winning trick: ");
-        console.log(games[room_code].winning_trick);
+        // console.log("New winning trick: ");
+        // console.log(games[room_code].winning_trick);
     }
 }
 
-function updateSubRoundWinnerTrick(room_code, sub_round){
+function updateSubRoundWinnerTrick(room_code){
     // console.log("------------UPDATE SUB ROUND WINNER TRICk-------------");
     // console.log(`game[${room_code}]:`);
     // console.log(games[room_code]);
@@ -380,8 +391,11 @@ function updateSubRoundWinnerTrick(room_code, sub_round){
 
     // console.log("winning_trick:");
     // console.log(winning_trick);
+    // console.log(`games[room_code].sub_round : ${games[room_code].sub_round}`);
+    // console.log("subround: ");
+    // console.log(private_games[room_code].rounds[ games[room_code].round ].cards_played[ games[room_code].sub_round ]);
 
-    private_games[room_code].rounds[ games[room_code].round ].cards_played[sub_round].winner_trick = winning_trick;
+    private_games[room_code].rounds[ games[room_code].round ].cards_played[ games[room_code].sub_round ].winner_trick = winning_trick;
     
     if (games[room_code].winning_trick.trick.id != 71){
         // console.log(`${winning_trick.player_handle} takes the trick!`);
@@ -405,8 +419,9 @@ function initGame(room_code) {
         to_play : n,
         round_lead : n,
         round : 1,
+        sub_round : 0,
         total_rounds : 10,
-        round_time : 60,
+        round_time : 30,
         bet_time : 10,
         winning_trick : null,
         players : []
@@ -420,7 +435,7 @@ function initGame(room_code) {
 
     initPlayers(room_code);
     initRound(room_code);
-    initSubRound(room_code, 0);
+    initSubRound(room_code, 1);
 }
 
 function initPlayers(room_code)
@@ -478,8 +493,8 @@ function resetRound(room_code){
 }
 
 
-function initSubRound(room_code, sub_round){
-    private_games[room_code].rounds[ games[room_code].round ].cards_played[sub_round] = {
+function initSubRound(room_code){
+    private_games[room_code].rounds[ games[room_code].round ].cards_played[ games[room_code].sub_round ] = {
         cards : [],
         winner_trick : null
     };
@@ -573,13 +588,17 @@ function updateHandAux(room_code, socket_id){
             value: private_games[room_code].players[users[socket_id].handle].hand[t].value, 
             type: private_games[room_code].players[users[socket_id].handle].hand[t].type, 
             valid: private_games[room_code].players[users[socket_id].handle].hand[t].valid }
-        if (validTrick(room_code, temp_trick))
+        if (validTrick(room_code, temp_trick) == true)
         {
+            // console.log("VALID");
             temp_trick.valid = true;
-            if (['Kraken', 'Loot', 'Escape'].includes(temp_trick.type) == false){
+            if (['Purple Suit', 'Green Suit', 'Yellow Suit'].includes(temp_trick.type) ||
+                ( games[room_code].winning_trick != null &&
+                    (games[room_code].winning_trick.trick.type == 'Jolly Ranger' && temp_trick.type == 'Jolly Ranger'))){
                 private_games[room_code].players[users[socket_id].handle].valid_play = true;
             }
         }else{
+            // console.log("INVALID");
             temp_trick.valid = false;
         }
         hands[socket_id].push(temp_trick);
@@ -643,36 +662,42 @@ function superiorTrick(room_code, trick){
 }
 
 function validTrick(room_code, trick){
-    console.log("-------------VALID TRICK-------------");
+    // console.log("-------------VALID TRICK-------------");
     if (games[room_code].winning_trick == null) return true;
     switch (games[room_code].winning_trick.trick.type){
         case 'Yellow Suit':
             if (['Purple Suit', 'Green Suit'].includes(trick.type)) return false;
-            if (trick.type == 'Yellow Suit' && trick.value < games[room_code].winning_trick.trick.value) return false;
             break;
         case 'Purple Suit':
             if (['Yellow Suit', 'Green Suit'].includes(trick.type)) return false;
-            if (trick.type == 'Purple Suit' && trick.value < games[room_code].winning_trick.trick.value) return false;
             break;
         case 'Green Suit':
             if (['Yellow Suit', 'Purple Suit'].includes(trick.type)) return false;
-            if (trick.type == 'Green Suit' && trick.value < games[room_code].winning_trick.trick.value) return false;
             break;
         case 'Jolly Ranger':
             if (['Purple Suit', 'Yellow Suit', 'Green Suit'].includes(trick.type)){
-                sub_round_idx = getSubRound(room_code);
-                console.log(sub_round_idx);
-                let sub_round = private_games[room_code].rounds[ games[room_code].round ].cards_played[sub_round_idx];
-                console.log(sub_round);
+                // console.log("Trick:");
+                // console.log(trick);
+                let sub_round = private_games[room_code].rounds[ games[room_code].round ].cards_played[ games[room_code].sub_round ];
+                // console.log(`sub_round: ${games[room_code].sub_round}`);
+                // console.log(sub_round);
                 // check if round is being played with Jolly Ranger
                 for (card_idx in sub_round.cards){
-                    let prev_trick = sub_round.cards[card_idx];
-                    if (prev_trick.type == 'Jolly Ranger') return false;
-                    else if (['Purple Suit', 'Yellow Suit', 'Green Suit'].includes(prev_trick.type)) return true;
+                    let prev_trick = sub_round.cards[card_idx].trick;
+                    // console.log("previous trick:");
+                    // console.log(prev_trick);
+                    if (prev_trick.type == 'Jolly Ranger') {
+                        // console.log("INVALID TRICK");
+                        return false;
+                    }
+                    
+                    if (['Purple Suit', 'Yellow Suit', 'Green Suit'].includes(prev_trick.type)) {
+                        // console.log("VALID TRICK");
+                        return true;
+                    }
                     // else the only other 2 valid cards must have been wildcards => continue searching
                 }
             }
-            if (trick.type == 'Jolly Ranger' && trick.value < games[room_code].winning_trick.trick.value) return false;
             break;
         case 'Escape':
         case 'Loot':
@@ -720,12 +745,13 @@ function bonusPoints(room_code, player_index)
     // private_games[room_code].rounds[ games[room_code].round ].cards_played[sub_round].cards
 
     for (sub_round_idx in private_games[room_code].rounds[ games[room_code].round ].cards_played){
-        let sub_round = private_games[room_code].rounds[ games[room_code].round ].cards_played[sub_round_idx];
-        
+        // console.log(`sub_round_idx: ${sub_round_idx}`);
+        let sub_round = private_games[room_code].rounds[ games[room_code].round ].cards_played[ sub_round_idx ];
+        // console.log(sub_round);
         // if player won this subround
         if (sub_round.winner_trick.player_handle == player.handle){
             for (card_idx in sub_round.cards){
-                let trick = sub_round.cards[card_idx];
+                let trick = sub_round.cards[card_idx].trick;
                 
                 // skip winner trick
                 if (trick.id != sub_round.winner_trick.trick.id){

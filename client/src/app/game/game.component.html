@@ -41,14 +41,14 @@
                         <div class="card-header">
                             <strong>Betting</strong>
                             <div class="card-header-actions">
-                            <span class="badge badge-success">Round: {{game.round}}</span>
+                            <span class="badge badge-success">Round: {{game.sub_round + 1}}/{{game.round}}</span>
                             <span class="badge badge-pill badge-danger">Time left: XX</span>
                             <!-- <app-timer></app-timer> -->
                             </div>
                         </div>
                         <div class="card-body">
                             <div role="alert" class="alert alert-success" ng-reflect-klass="alert alert-success" ng-reflect-ng-class="">
-                                <strong>{{game.players[game.to_play].handle}}</strong> to play.
+                                <h4><strong>{{game.players[game.to_play].handle}}</strong> to play.</h4>
                             </div>
 
                             <app-hand></app-hand>
@@ -73,14 +73,14 @@
                         <div class="card-header">
                             <strong>Playing</strong>
                             <div class="card-header-actions">
-                            <span class="badge badge-success">Round: {{game.round}}</span>
+                            <span class="badge badge-success">Round: {{game.sub_round + 1}}/{{game.round}}</span>
                             <span class="badge badge-pill badge-danger">Time left: XX</span>
                             <!-- <app-timer></app-timer> -->
                             </div>
                         </div>
                         <div class="card-body">
                             <div role="alert" class="alert alert-success" ng-reflect-klass="alert alert-success" ng-reflect-ng-class="">
-                                <strong>{{game.players[game.to_play].handle}}</strong> to play.
+                                <h4><strong>{{game.players[game.to_play].handle}}</strong> to play.</h4>
                             </div>
                             <app-game-players></app-game-players>
                             <app-hand></app-hand>

@@ -58,7 +58,6 @@ export class TitleComponent implements OnInit {
       code: code,
       users: [],
       state: null,
-      ttl: null,
       SK: null
     }
 
