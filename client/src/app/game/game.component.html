@@ -13,15 +13,15 @@
                 <!-- Nav tabs -->
                 <tabset>
                   <tab>
-                    <ng-template tabHeading><i class="icon-calculator"></i> Players </ng-template>
+                    <ng-template tabHeading><i class="icon-people"></i> Players </ng-template>
                     <app-lobby-players></app-lobby-players>
                   </tab>
                   <tab>
-                    <ng-template tabHeading><i class="icon-basket-loaded"></i> Settings </ng-template>
+                    <ng-template tabHeading><i class="icon-settings"></i> Settings </ng-template>
                     <app-lobby-options></app-lobby-options>
                   </tab>
                   <tab>
-                    <ng-template tabHeading><i class="icon-pie-chart"></i> Chat </ng-template>
+                    <ng-template tabHeading><i class="icon-speech"></i> Chat </ng-template>
                     <app-messages></app-messages>
                   </tab>
                 </tabset>
@@ -48,7 +48,7 @@
                         </div>
                         <div class="card-body">
                             <div role="alert" class="alert alert-success" ng-reflect-klass="alert alert-success" ng-reflect-ng-class="">
-                                <h4><strong>{{game.players[game.to_play].handle}}</strong> to play.</h4>
+                                <h4><strong>{{game.players[game.to_play].handle}}</strong> leads the round.</h4>
                             </div>
 
                             <app-hand></app-hand>
@@ -79,13 +79,9 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div role="alert" class="alert alert-success" ng-reflect-klass="alert alert-success" ng-reflect-ng-class="">
-                                <h4><strong>{{game.players[game.to_play].handle}}</strong> to play.</h4>
-                            </div>
                             <app-game-players></app-game-players>
                             <app-hand></app-hand>
                             <app-game-details></app-game-details>
-
                         </div>
                     </div>
                 </div>

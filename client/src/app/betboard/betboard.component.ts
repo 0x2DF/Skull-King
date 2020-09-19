@@ -23,9 +23,7 @@ export class BetboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.gameService.sharedGame.subscribe(game => {
-      console.log("betboard component");
       this.game = game;
-      console.log(this.game);
     });
   }
 

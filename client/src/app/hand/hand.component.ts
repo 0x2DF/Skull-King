@@ -24,6 +24,10 @@ export class HandComponent implements OnInit {
   }
 
   playTrick(trick: Trick){
+    if (trick.id == 72){
+      let tigress_switch = document.getElementById(`${trick.id}_switch`) as HTMLInputElement;
+      trick.type = (tigress_switch.checked == true ? 'Pirate' : 'Escape');
+    }
     this.gameService.playTrick(trick);
   }
 

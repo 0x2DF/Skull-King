@@ -56,7 +56,6 @@ export class LobbyPlayersComponent implements OnInit {
 
   StartLobby(){
     event.preventDefault();
-    console.log("Starting lobby!");
     if (this.roomService) this.roomService.startLobby();
   }
 

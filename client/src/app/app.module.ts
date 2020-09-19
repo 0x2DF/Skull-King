@@ -31,8 +31,13 @@ import { SocketService } from './socket.service';
 import { GameComponent } from './game/game.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { HandComponent } from './hand/hand.component';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { ModalModule } from 'ngx-bootstrap/modal';
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -60,7 +65,11 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     AppRoutingModule,
     AppHeaderModule,
     HttpClientModule,
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    ModalModule.forRoot(),
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
+    CarouselModule.forRoot(),
   ],
   providers: [SocketService],
   bootstrap: [AppComponent]

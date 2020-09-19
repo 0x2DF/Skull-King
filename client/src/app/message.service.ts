@@ -20,14 +20,11 @@ export class MessageService {
 
 
   listenForMessages(){
-    console.log("listen for messages");
     this.socketService.getSocketData('message-broadcast').subscribe(
       data =>
       {
         if (data.message)
         {
-          console.log("message-broadcast");
-          console.log(data.message);
           const element = document.createElement('li');
           element.innerHTML = 
           `

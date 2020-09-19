@@ -1,25 +1,20 @@
 - Sanitize input
-- FE styling
+- UX
 - Timers
 - TTL
-
 - Game Details (settings)
-- Tutorial
-
-- Scoreboard
+- Scoreboard (sorted)
 - Pirate Skills
-
 - Game modes
 - Docs
 
-----------------------------------
-[Local Execution]
+Local Execution
+
 Client (local):
 ng serve
 
 Server (local):
 node app.js
-----------------------------------
-[Deploy]
 
+Deploy
 ng build --prod

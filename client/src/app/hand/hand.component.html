@@ -6,16 +6,13 @@
             </div>
             <div class="row">
                 <div class="col-2 col-lg-2" style="min-width: 140px; min-height: 230px;" *ngFor="let trick of hand">
-                    <!-- <div class="card" > -->
-                        <div class="card-body clearfix" (click)="playTrick(trick)">
-                            <!-- <div class="float-left"> -->
-                                <img style="width: 100%; height: 100%;" src="assets/images/small/{{trick.id}}.jpg">
-                            <!-- </div> -->
-                            <!-- <div class="h5 text-danger mb-0 pt-3">{{trick.name}}</div>
-                            <div class="text-muted font-weight-bold font-xs">Value: {{trick.value}}</div>
-                            <div class="text-muted font-weight-bold font-xs">Type: {{trick.type}}</div> -->
-                        </div>
-                    <!-- </div> -->
+                    <div class="card">
+                            <img (click)="playTrick(trick)" style="width: 100%; height: 100%;" src="assets/images/small/{{trick.id}}.jpg">
+                        <label class="switch switch-label switch-primary" style="width: 100%" *ngIf="trick.id == 72">
+                            <input id="{{trick.id}}_switch" type="checkbox" class="switch-input" checked>
+                            <span class="switch-slider" data-checked="Pirate" data-unchecked="Escape"></span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>

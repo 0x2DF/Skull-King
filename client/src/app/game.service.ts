@@ -7,6 +7,8 @@ import { Room } from './room';
 import { User } from './user';
 import { Trick } from './trick';
 import { SocketService } from './socket.service';
+import { SubRound } from './subround';
+import { WinnerTrick } from './winnertrick';
 
 @Injectable({
   providedIn: 'root'
@@ -31,11 +33,14 @@ export class GameService {
   private hand = new BehaviorSubject<Trick[]>([]);
   sharedHand = this.hand.asObservable();
 
-  private sub_round = new BehaviorSubject({
-    winner_trick : null,
-    cards : []
-  });
+  private sub_round = new BehaviorSubject<SubRound[]>([]);
   sharedSubRound = this.sub_round.asObservable();
+
+  private winner_trick = new BehaviorSubject({
+    trick : null,
+    player_handle : null,
+  });
+  sharedWinnerTrick = this.winner_trick.asObservable();
 
   constructor(
     private socketService: SocketService
@@ -46,8 +51,6 @@ export class GameService {
     let socket = this.socketService.getSocket();
 
     socket.on('refresh-game', data => {
-      console.log("game service [updateGame]");
-      console.log(data.game);
       if (data.game){
         this.game.next(data.game);
       }
@@ -55,18 +58,20 @@ export class GameService {
     });
 
     socket.on('refresh-hand', data => {
-      console.log("game service [updateGame]");
-      console.log(data.hand);
       if (data.hand){
         this.hand.next(data.hand);
       }
     });
 
     socket.on('refresh-subround', data => {
-      console.log('game server [updateGame');
-      console.log(data.sub_round);
       if (data.sub_round){
         this.sub_round.next(data.sub_round);
+      }
+    });
+
+    socket.on('winner-trick', data => {
+      if (data.winner_trick){
+        this.winner_trick.next(data.winner_trick);
       }
     });
   }

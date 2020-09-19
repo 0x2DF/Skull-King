@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs';
+import {ModalDirective} from 'ngx-bootstrap/modal';
 
 import { Room } from '../room';
 import { RoomService } from '../room.service';
@@ -13,6 +14,7 @@ import { CompileTemplateMetadata } from '@angular/compiler';
   styleUrls: ['./title.component.css']
 })
 export class TitleComponent implements OnInit {
+  @ViewChild('warningModal') public warningModal: ModalDirective;
 
   room: Room;
   message: string;
@@ -21,7 +23,7 @@ export class TitleComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private roomService: RoomService,
-    private location: Location
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -76,10 +78,6 @@ export class TitleComponent implements OnInit {
         }
       }
     );
-  }
-
-  howToPlay() {
-
   }
 
 }

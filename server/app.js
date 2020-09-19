@@ -54,6 +54,7 @@ let private_games = {};
 io.on("connection", socket => {
 
     socket.on('disconnect', () =>{
+        console.log(`rooms.length : ${rooms.length}`);
         // If user existed and room exists
         if ((socket.id in users) && (users[socket.id].room_code in rooms)){
             let room_code = users[socket.id].room_code;
@@ -254,18 +255,15 @@ io.on("connection", socket => {
 
 
                         if (games[room_code].to_play == games[room_code].round_lead){
-                            // console.log("end sub round");
+                            updateSubRoundWinnerTrick(room_code);
+                            io.to(room_code).emit("winner-trick", {winner_trick : private_games[room_code].rounds[ games[room_code].round ].cards_played[ games[room_code].sub_round ].winner_trick});
 
                             if (games[room_code].sub_round + 1 < games[room_code].round){
-                                updateSubRoundWinnerTrick(room_code);
                                 games[room_code].sub_round += 1;
 
-                                // console.log("next sub round");
                                 initSubRound(room_code);
 
                             }else{
-                                updateSubRoundWinnerTrick(room_code);
-
                                 updateScore(room_code);
 
                                 games[room_code].round += 1;
@@ -288,7 +286,7 @@ io.on("connection", socket => {
                         // console.log(games[room_code]);
                         io.to(room_code).emit("refresh-game", {game : games[room_code]});
                         io.to(room_code).emit("refresh-subround", {sub_round : 
-                            private_games[room_code].rounds[ games[room_code].round ].cards_played[ games[room_code].sub_round ]});
+                            private_games[room_code].rounds[ games[room_code].round ].cards_played[ games[room_code].sub_round ].cards});
                     }else {
                         console.log("Attempting to play invalid trick. (either does not own the trick, or it's an invalid move)");
                     }
