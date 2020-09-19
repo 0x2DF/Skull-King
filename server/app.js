@@ -54,7 +54,6 @@ let private_games = {};
 io.on("connection", socket => {
 
     socket.on('disconnect', () =>{
-        console.log(`rooms.length : ${rooms.length}`);
         // If user existed and room exists
         if ((socket.id in users) && (users[socket.id].room_code in rooms)){
             let room_code = users[socket.id].room_code;
