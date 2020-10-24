@@ -1,5 +1,8 @@
 var Deck = require("./Models/Deck")
 
+// #######
+// Local
+// #######
 
 const express = require('express');
 // let express = require('express')();
@@ -14,29 +17,27 @@ http.listen(PORT, () => {
   console.log(`https://skull-king-app.herokuapp.com:${PORT}`);
 });
 
-// const path = require('path');
-// const app = express();
-// app.use(express.static(__dirname + '/Public/client'));
-// app.get('/*', function(req,res) {
-// res.sendFile(path.join(__dirname+'/Public/client/index.html'));});
-// app.listen(process.env.PORT || 8080);
-// app.listen(process.env.PORT || 3000);
 
+// #######
+// Heroku
+// #######
 
-// const PORT = process.env.PORT || 3000;
-// const INDEX = '/Public/client/index.html';
+/*
+const PORT = process.env.PORT || 3000;
+const INDEX = '/Public/client/index.html';
 
-// const express = require('express');
-// const socketIO = require('socket.io');
-// const path = require('path');
+const express = require('express');
+const socketIO = require('socket.io');
+const path = require('path');
 
-// const server = express()
-//   .use(express.static(__dirname + '/Public/client'))
-//   .get('/*', function(req,res) {
-//     res.sendFile(path.join(__dirname+'/Public/client/index.html'));})
-//   .listen(PORT, () => console.log(`Listening on ${PORT}`));
+const server = express()
+  .use(express.static(__dirname + '/Public/client'))
+  .get('/*', function(req,res) {
+    res.sendFile(path.join(__dirname+'/Public/client/index.html'));})
+  .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-// const io = socketIO(server);
+const io = socketIO(server);
+*/
 
 
 

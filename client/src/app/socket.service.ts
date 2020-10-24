@@ -10,7 +10,10 @@ export class SocketService{
   private socket;
 
   constructor() { 
+    // Local
     this.socket = io('http://localhost:3000')
+
+    // Heroku
     // this.socket = io();
   }
 
