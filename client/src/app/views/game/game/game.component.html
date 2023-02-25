@@ -1,0 +1,25 @@
+<div *ngIf="user.handle == '' else lobbySection">
+  <game-handle [lobby]="lobby" (userEvent)="setUser($event)"></game-handle>
+</div>
+
+<ng-template #lobbySection>
+  <ng-container *ngIf= "lobby.state == 'waiting' else bettingSection">
+    <game-lobby [lobby]="lobby" [user]="user"></game-lobby>
+  </ng-container>
+</ng-template>
+
+<ng-template #bettingSection>
+  <ng-container *ngIf= "game.details.state == 'betting' else playingSection">
+    <game-betting [game]="game" [user]="user"></game-betting>
+  </ng-container>
+</ng-template>
+
+<ng-template #playingSection>
+  <ng-container *ngIf= "game.details.state == 'playing' else scoreboardSection">
+    <game-playing [game]="game" [user]="user"></game-playing>
+  </ng-container>
+</ng-template>
+
+<ng-template #scoreboardSection>
+  <game-scoreboard [game]="game" [user]="user"></game-scoreboard>
+</ng-template>

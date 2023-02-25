@@ -1,77 +1,104 @@
-import {
-  AppAsideModule,
-  AppBreadcrumbModule,
-  AppHeaderModule,
-  AppFooterModule,
-  AppSidebarModule,
-} from '@coreui/angular';
-
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';  
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReactiveFormsModule } from '@angular/forms';
 
+import {
+  PERFECT_SCROLLBAR_CONFIG,
+  PerfectScrollbarConfigInterface,
+  PerfectScrollbarModule,
+} from 'ngx-perfect-scrollbar';
+
+// Import routing module
 import { AppRoutingModule } from './app-routing.module';
 
+// Import app component
 import { AppComponent } from './app.component';
-import { TitleComponent } from './title/title.component';
-import { NameComponent } from './name/name.component';
-import { LobbyPlayersComponent } from './lobby-players/lobby-players.component';
-import { LobbyOptionsComponent } from './lobby-options/lobby-options.component';
-import { TimerComponent } from './timer/timer.component';
-import { DeckComponent } from './deck/deck.component';
-import { GameDetailsComponent } from './game-details/game-details.component';
-import { GamePlayersComponent } from './game-players/game-players.component';
-import { ScoreboardComponent } from './scoreboard/scoreboard.component';
-import { BetboardComponent } from './betboard/betboard.component';
-import { MessagesComponent } from './messages/messages.component';
-import { RoundDetailsComponent } from './round-details/round-details.component';
-import { SocketService } from './socket.service';
-import { GameComponent } from './game/game.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { HandComponent } from './hand/hand.component';
-import { CarouselModule } from 'ngx-bootstrap/carousel';
 
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import { ModalModule } from 'ngx-bootstrap/modal';
+// Import containers
+import {
+  DefaultFooterComponent,
+  DefaultHeaderComponent,
+  DefaultLayoutComponent,
+} from './containers';
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ToastrModule } from 'ngx-toastr';
+import {
+  AvatarModule,
+  BadgeModule,
+  BreadcrumbModule,
+  ButtonGroupModule,
+  ButtonModule,
+  CardModule,
+  DropdownModule,
+  FooterModule,
+  FormModule,
+  GridModule,
+  HeaderModule,
+  ListGroupModule,
+  NavModule,
+  ProgressModule,
+  SharedModule,
+  SidebarModule,
+  TabsModule,
+  UtilitiesModule,
+} from '@coreui/angular';
+
+import { IconModule, IconSetService } from '@coreui/icons-angular';
+
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+  suppressScrollX: true,
+};
+
+const APP_CONTAINERS = [
+  DefaultFooterComponent,
+  DefaultHeaderComponent,
+  DefaultLayoutComponent,
+];
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    TitleComponent,
-    NameComponent,
-    LobbyPlayersComponent,
-    LobbyOptionsComponent,
-    TimerComponent,
-    DeckComponent,
-    GameDetailsComponent,
-    GamePlayersComponent,
-    ScoreboardComponent,
-    BetboardComponent,
-    MessagesComponent,
-    RoundDetailsComponent,
-    GameComponent,
-    PageNotFoundComponent,
-    HandComponent
-  ],
+  declarations: [AppComponent, ...APP_CONTAINERS],
   imports: [
+    BadgeModule,
     BrowserModule,
-    CommonModule,
-    FormsModule,
-    AppRoutingModule,
-    AppHeaderModule,
-    HttpClientModule,
-    TabsModule.forRoot(),
-    ModalModule.forRoot(),
     BrowserAnimationsModule,
-    ToastrModule.forRoot(),
-    CarouselModule.forRoot(),
+    AppRoutingModule,
+    AvatarModule,
+    BreadcrumbModule,
+    FooterModule,
+    DropdownModule,
+    GridModule,
+    HeaderModule,
+    SidebarModule,
+    IconModule,
+    PerfectScrollbarModule,
+    NavModule,
+    ButtonModule,
+    FormModule,
+    UtilitiesModule,
+    ButtonGroupModule,
+    ReactiveFormsModule,
+    SidebarModule,
+    SharedModule,
+    TabsModule,
+    ListGroupModule,
+    ProgressModule,
+    ListGroupModule,
+    CardModule,
   ],
-  providers: [SocketService],
-  bootstrap: [AppComponent]
+  providers: [
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy,
+    },
+    {
+      provide: PERFECT_SCROLLBAR_CONFIG,
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
+    },
+    IconSetService,
+    Title
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {
+}

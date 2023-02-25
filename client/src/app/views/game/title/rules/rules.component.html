@@ -1,0 +1,13 @@
+<button cButton color="info" variant="outline" (click)="toggleRules()" cButton>Rules</button>
+<c-modal id="rulesModal" [visible]="rulesVisible" (visibleChange)="handleRulesChange($event)">
+  <c-modal-header>
+    <h5 cModalTitle>Rules</h5>
+    <button (click)="toggleRules()" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>Woohoo, you&#39;re reading this text in a modal!</c-modal-body>
+  <c-modal-footer>
+    <button (click)="toggleRules()" cButton color="secondary">
+      Close
+    </button>
+  </c-modal-footer>
+</c-modal>

@@ -1,0 +1,42 @@
+<c-row ngPreserveWhitespaces>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <b>Lobby: </b><code> {{ lobby.code }}</code>
+      </c-card-header>
+      <c-card-body>
+        <c-nav variant="tabs">
+          <c-nav-item>
+            <a [active]="true" [cTabContent]="tabContent" routerLink="./" [tabPaneIdx]="0" cNavLink>
+              <svg cIcon class="me-2" name="cilUser"></svg>
+              Players
+            </a>
+          </c-nav-item>
+          <c-nav-item>
+            <a [cTabContent]="tabContent" routerLink="./" [tabPaneIdx]="1" cNavLink>
+              <svg cIcon class="me-2" name="cilUser"></svg>
+              Settings
+            </a>
+          </c-nav-item>
+          <c-nav-item>
+            <a [cTabContent]="tabContent" routerLink="./" [tabPaneIdx]="2" cNavLink>
+              <svg cIcon class="me-2" name="cilCode"></svg>
+              Chat
+            </a>
+          </c-nav-item>
+        </c-nav>
+        <c-tab-content #tabContent="cTabContent" [activeTabPaneIdx]="1" cRounded="bottom">
+          <c-tab-pane class="p-3 preview" role="tabpanel">
+            <game-lobby-players [lobby]="lobby" [user]="user"></game-lobby-players>
+          </c-tab-pane>
+          <c-tab-pane class="p-3 preview" role="tabpanel">
+            <game-lobby-options></game-lobby-options>
+          </c-tab-pane>
+          <c-tab-pane class="p-3 preview" role="tabpanel">
+            <game-messages></game-messages>
+          </c-tab-pane>
+        </c-tab-content>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

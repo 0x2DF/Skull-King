@@ -1,14 +1,4 @@
-Todo:
-- Disconnect destroy
-- Room timeout (TTL)
-- Sanitize input
-- UX (Too much scrolling/mobile score table in game)
-- Bet/Play Timers
-- Bets waiting for
-- Game Details (settings)
-- Scoreboard (sorted)
-- Pirate Skills
-- Docs
+Version 2.0 (remaster + custom cards)
 
 #####################
 Local Execution cmds:
@@ -35,3 +25,10 @@ git add .
 git commit -m "commit msg"
 git push heroku master
 heroku logs --tail
+
+#####################
+Update npm dependencies:
+
+npm i -g npm-check-updates
+ncu -u
+npm install

@@ -1,0 +1,17 @@
+<c-row>
+    <c-col>
+      <c-card class="mb-4">
+        <c-card-header>
+            <b>List of tricks</b>
+        </c-card-header>
+        <c-card-body>
+            <c-card-group class="mb-4">
+                <c-card *ngFor="let card of hand">
+                    <!-- <img style="width: 100%; height: 100%;" cCardImg="top" src="./assets/img/{{card.id}}.jpg"> -->
+                    <img style="width: {{100 / hand.length}}%; height: 100%;" cCardImg="top" src="./assets/img/deck/test.jpg">
+                </c-card>
+            </c-card-group>
+        </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

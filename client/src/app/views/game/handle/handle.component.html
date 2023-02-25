@@ -1,0 +1,29 @@
+<c-row ngPreserveWhitespaces>
+  <c-col xs="12">
+    <c-card [cBorder]="{top: {color: borderColor, width: 3}}" class="text-center mb-4">
+      <c-card-header>
+        <b>Join Lobby: </b><code> {{ lobby.code }}</code>
+      </c-card-header>
+      <c-card-body>
+        <form cForm>
+          <div class="row">
+              <div class="col-6 d-grid gap-2 mx-auto">
+                <input 
+                  id="inputName" name="username" #username
+                  aria-label="input" cFormControl placeholder="Username" type="text" />
+                <br/>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-6 d-grid gap-2 mx-auto">
+                <button cButton color="success" variant="outline" (click)="submitName(username.value)">Join</button>
+              </div>
+          </div>
+          <div class="row">
+            <!-- <game-handle-toast></game-handle-toast> -->
+          </div>
+        </form>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

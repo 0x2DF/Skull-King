@@ -1,0 +1,22 @@
+<c-card class="text-center mb-4">
+  <c-card-body>
+    <h5 cCardTitle>Select your bet for this round</h5>
+
+    <div class="row align-items-center">
+        <div class="col-2 col-sm-2 col-md-2 col-xl mb-2 mb-xl-0" *ngFor="let bet of bets">
+          <button 
+            id="{{bet}}_bet_btn" 
+            cButton color="light" 
+            shape="rounded-pill" 
+            (click)="placeBet(bet)">
+            {{bet}}
+          </button>
+        </div>
+    </div>
+
+    
+  </c-card-body>
+  <c-card-footer class="text-medium-emphasis">
+    <c-badge class="me-1" color="danger">Time left: XX</c-badge>
+  </c-card-footer>
+</c-card>

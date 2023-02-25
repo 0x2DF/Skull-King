@@ -1,0 +1,43 @@
+<c-row ngPreserveWhitespaces>
+  <c-col xs="12">
+    <c-card [cBorder]="{top: {color: borderColor, width: 3}}" class="text-center mb-4">
+      <c-card-header>
+        <b>Skull King</b>
+      </c-card-header>
+      <c-card-body>
+        <form cForm>
+          <div class="mb-4">
+            <!-- <game-title-toast></game-title-toast> -->
+          </div>
+          <div class="row mb-3">
+            <div class="col-6 d-grid gap-2 mx-auto">
+              <input 
+                id="inputLobbyCode" #lobbyCode
+                aria-label="lg input" cFormControl placeholder="Lobby Code" sizing="lg" type="text" />
+              <br/>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-6 d-grid gap-2 mx-auto">
+              <button cButton color="success" variant="outline" (click)="findLobby(lobbyCode.value)">Enter Lobby</button>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-6 d-grid gap-2 mx-auto">
+              <button cButton color="warning" variant="outline" (click)="createLobby()">New Lobby</button>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-6 d-grid gap-2 mx-auto">
+              <ng-container *ngTemplateOutlet="rules"></ng-container>
+            </div>
+          </div>
+        </form>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
+
+<ng-template #rules>
+  <game-rules></game-rules>
+</ng-template>

@@ -1,0 +1,18 @@
+<c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header>
+          <b>Betting</b>
+          <c-badge class="me-1" color="success">Round: {{game.details.round + 1}}</c-badge>
+        </c-card-header>
+        <c-card-body>
+            <c-alert color="success">
+                <h4><strong>{{ game.rounds[game.details.round].tricks[game.details.trick].lead }}</strong> leads the round.</h4>
+            </c-alert>
+
+            <game-betting-hand></game-betting-hand>
+            <game-betting-betboard></game-betting-betboard>
+        </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

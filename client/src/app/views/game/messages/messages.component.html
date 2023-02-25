@@ -1,0 +1,15 @@
+
+<div class="chat-messages-show-container">
+  <ul class="list-group mb-3" id="message-list">
+      
+  </ul>
+</div>
+
+<form class="card p-2">
+  <div class="input-group">
+      <input type="text" class="form-control" placeholder="Enter Message" [(ngModel)]="message" [ngModelOptions]="{standalone: true}">
+      <div class="input-group-append">
+      <button type="submit" class="btn btn-secondary" (click)="SendMessage()">Send</button>
+      </div>
+  </div>
+</form>
