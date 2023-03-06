@@ -45,7 +45,7 @@ var GAME = (function() {
     // Initializes a new game from an existing lobby.
     function startGame(lobby_code, lobbies, clients) {
         _initGame(lobbies[lobby_code], clients);
-        _dealCards(lobbies[lobby_code]);
+        _dealCards(lobby_code);
 
         return {
             game : _redactGame(games[lobby_code]),
@@ -90,14 +90,17 @@ var GAME = (function() {
             ("game_code" in response) == false ) {
             return { error: { name: "GameInternalServiceError" } };
         }
+        const code = response.game_code;
+        const player_index  = response.player_index;
 
-        const code = response.code;
+        response = _playCard(code, player_index, card);
+        if ("error"  in response) return response;
 
-        response = _playCard(code, response.player_index, card);
-        if (("error" )) return response;
+        response = _getPlayerHand(code, player_index)
 
         return {
             game : _redactGame(games[code]),
+            hand : response.hand
         };
     }
 
@@ -241,8 +244,9 @@ var GAME = (function() {
         let trick = {
             lead: null,
             to_play: null,
-            cards: null,
+            cards: [],
             winner: null,
+            points: 0,
         }
         return trick;
     }
@@ -250,7 +254,7 @@ var GAME = (function() {
     // Distribute an equal amout of cards to each player in the game.
     // Amount of cards dealt depends on the round.
     // Cards are taken from a single deck.
-    function _dealCards(lobby) {
+    function _dealCards(code) {
         // Create a copy of the deck.
         let cards = [];
         for (const index of Array(Deck.getDeckLength(GAME_DECK_MODE[0])).keys()) {
@@ -260,12 +264,13 @@ var GAME = (function() {
     
         // Deal one card to each player for each trick in the round.
         // Round #3 = 3 tricks played that round
-        let round = games[lobby.code].details.round;
+        let round = games[code].details.round;
         while (round + 1 > 0) {
-            for (const player_index in games[lobby.code].players) {
+            for (const player_index in games[code].players) {
                 // Deal random card
                 let card_index = Math.floor(Math.random() * cards.length);
-                const card = Deck.getCard(card_index);
+                const card = Deck.getCard(cards[card_index]);
+                console.log("Dealt card ", card.id, "to player ", games[code].players[player_index].handle)
                 let new_card = {
                     id: card.id,
                     name: card.name,
@@ -273,7 +278,7 @@ var GAME = (function() {
                     value: card.value,
                     type: card.type,
                 }
-                games[lobby.code].players[player_index].hand.push(new_card);
+                games[code].players[player_index].hand.push(new_card);
                 // Remove card from deck
                 cards.splice(card_index, 1);
             }
@@ -377,13 +382,12 @@ var GAME = (function() {
     // + The card must be a valid to play.
     function _playCard(code, player_index, card) {
         const player = games[code].players[player_index];
-
         const round = games[code].details.round;
         const trick = games[code].details.trick;
 
         // Check if its the players turn.
         if (games[code].rounds[round].tricks[trick].to_play != player.handle) {
-            console.log(`Not ${player_index}'s turn!`);
+            console.log(`Not ${player.handle}'s turn!`);
             return { error: { name: "GameNotPlayersTurn" } };
         }
 
@@ -404,7 +408,7 @@ var GAME = (function() {
         }
 
         //  Changes the turn to the next player.
-        _nextTurn(code, player_index)
+        _changeNextTurn(code, player_index)
 
         // Handle card effects
         _handleCardEffect(code, player_index, player.hand[hand_index], card);
@@ -428,7 +432,7 @@ var GAME = (function() {
     }
 
     // Moves the turn to the next player.
-    function _nextTurn(code, player_index) {
+    function _changeNextTurn(code, player_index) {
         const round = games[code].details.round;
         const trick = games[code].details.trick;
 
@@ -443,8 +447,8 @@ var GAME = (function() {
             card: card
         }
 
-        const round = games[room_code].details.round;
-        const trick = games[room_code].details.trick;
+        const round = games[code].details.round;
+        const trick = games[code].details.trick;
         games[code].rounds[round].tricks[trick].cards.push(player_card);
     }
 
@@ -453,58 +457,52 @@ var GAME = (function() {
         games[code].players[player_index].hand.splice(card_index, 1);
     }
     
-    // Updates the trick winner and prepares the next trick/round
+    // Updates the trick winner and prepares the next trick/round.
     function _concludeTrick(code, round, trick) {
-        const winner_of_trick = _updateTrickWinner(code, round, trick);
+        _updateTrickWinner(code, round, trick);
+        _tallyTrickPoints(code, round, trick)
 
         // Check if the round is over
-        if ((trick + 1) < round){
-            // Prepares the game values for following trick
-            _nextTrick(code, winner_of_trick, round, trick);
-        }else{
+        if (trick == round){
             _concludeRound(code);
+        }else{
+            // Prepares the game values for following trick
+            _prepareNextTrick(code);
         }
     }
 
-    // Updates and return the winner of the trick.
+    // Updates the winner of the trick.
     function _updateTrickWinner(code, round, trick) {
         const winner = games[code].details.winning;
 
         const winner_handle = (winner.card.name != 'Kraken' ? winner.player : null);
 
-        // Update the winner player card
-        games[code].rounds[round].trick[trick].winner = {
+        games[code].rounds[round].tricks[trick].winner = {
             player: winner_handle,
             card: winner.card,
         }
-
-        // TODO: Update the trick points (add a points member to trick struct)
 
         // Update the player's trick_won count
         const winner_index = _getPlayerIndexByHandle(winner_handle, code);
         if (winner_index != -1) {
             games[code].players[winner_index].tricks_won += 1;
         }
+    }
 
-        return games[code].rounds[round].trick[trick].winner;
+    function _tallyTrickPoints(code, round, trick) {
+        // TODO
     }
 
     // Prepares the following trick
-    function _nextTrick(code, winner_of_trick, round){
+    function _prepareNextTrick(code){
         games[code].details.trick += 1;
-        const trick = games[code].details.trick;
 
-        // TODO: Select next available player if winner disconnected
-        games[code].rounds[round].tricks[trick].lead = winner_of_trick.player;
-        games[code].rounds[round].tricks[trick].to_play = winner_of_trick.player;
+        _setNewTrickLead(code);
 
-        games[code].details.winning = null;
-        games[code].details.leading = true;
-        games[code].details.weather = null;
-        games[code].details.event = null;
+        _resetGameDetails(code);
     }
 
-    // TODO
+    // Tallies up player score and moves the game to the next round.
     function _concludeRound(code) {
         // Update players score
         _updatePlayersScore(code);
@@ -515,22 +513,103 @@ var GAME = (function() {
 
         if (games[code].details.round > games[code].settings.total_rounds){
             games[code].state = States.scoreboard;
-            rooms[code].state = States.scoreboard;
-            io.to(code).emit("refresh-room", {room : rooms[code]});
         }else{
             _resetRound(code);
+            
+            const new_lead = _setNewTrickLead(code);
+            
+            // Set new round lead.
+            const round = games[code].details.round;
+            games[code].rounds[round].lead = new_lead;
+
             _dealCards(code);
-            games[code].state = States.betting;
+            games[code].details.state = States.betting;
         }
     }
 
-    // TODO
+    // Resets round values.
     function _resetRound(code){
+        _resetGameDetails(code);
         for (const index in games[code].players) {
             games[code].players[index].bet = 0;
             games[code].players[index].tricks_won = 0;
             games[code].players[index].hand = [];
         }
+    }
+
+    // Sets the lead for the next trick.
+    function _setNewTrickLead(code) {
+        const round = games[code].details.round;
+        const trick = games[code].details.trick;
+
+        const new_lead = _getNewLead(code);
+        games[code].rounds[round].tricks[trick].lead = new_lead;
+        games[code].rounds[round].tricks[trick].to_play = new_lead;
+
+    }
+
+    // Next trick lead is determined by the previous winner. 
+    // In case of no previous winner, use previous lead.
+    function _getNewLead(code) {
+        const previous_winner = _getPreviousTrickWinner(code)
+        if (previous_winner == null) {
+            const previous_lead = _getPreviousLead(code)
+            // If round lead disconnected, generate a new round lead.
+            if (previous_lead == null) {
+                return _generateRoundLead(code);
+            } else {
+                return previous_lead;
+            }
+        }else {
+            return previous_winner.player;
+        }
+    }
+
+    // Obtain previous trick winner, null if no previous winner.
+    function _getPreviousTrickWinner(code) {
+        let round = games[code].details.round;
+        let trick = games[code].details.trick;
+
+        if (trick == 0) {
+            trick = round = round - 1;
+        }
+
+        if (trick >= 0) {
+            for (var trick_index = trick; trick_index >= 0; --trick_index) {
+                const last_winner = games[code].rounds[round].tricks[trick_index].winner
+                if (last_winner != null) {
+                    const player_index = _getPlayerIndexByHandle(last_winner.player, code)
+                    if (player_index != -1) {
+                        return last_winner
+                    }
+                }
+            }
+        }
+        // No previous winner.
+        return null;
+    }
+
+    // Obtain previous round lead.
+    function _getPreviousLead(code) {
+        let round = games[code].details.round;
+
+        if (games[code].rounds[round].lead == null) {
+            round = round - 1;
+        }
+
+        if (round >= 0) {
+            return games[code].rounds[round].lead;
+        }
+        // No previous winner.
+        return null;
+    }
+
+    // Reset game details.
+    function _resetGameDetails(code) {
+        games[code].details.winning = null;
+        games[code].details.leading = true;
+        games[code].details.weather = null;
+        games[code].details.event = null;
     }
 
 
@@ -615,7 +694,7 @@ var GAME = (function() {
             case 'Kraken':
                 _setEvent(code, player_index, card);
                 _setWinning(code, player_index, card);
-                _setLeading(false);
+                _setLeading(code, false);
                 break;
             case 'White Whale':
                 _setEvent(code, player_index, card);
@@ -625,7 +704,7 @@ var GAME = (function() {
                 } else {
                     _setWinning(code, player_index, card);
                 }
-                _setLeading(false);
+                _setLeading(code, false);
                 break;
             default:
                 console.log("Unknown event card");
@@ -641,7 +720,7 @@ var GAME = (function() {
             _setWinning(code, player_index, card);
 
             if (['Numbered', 'Wildcard'].includes(card.type) == false) {
-                _setLeading(false);
+                _setLeading(code, false);
             }
             return;
         }
@@ -657,7 +736,7 @@ var GAME = (function() {
         // Higher ranked card is played
         if (card.rank > winning_card.rank) {
             _setWinning(code, player_index, card);
-            _setLeading(false);
+            _setLeading(code, false);
             return;
         }
 
@@ -717,32 +796,32 @@ var GAME = (function() {
     // ------- //
     // Scoring //
 
-    // Updates the players score for the round
+    // Updates the players score for the round.
     function _updatePlayersScore(code)
     {
-        for (const player_index in games[code].players){
+        const round = games[code].round;
+        for (let player_index in games[code].players){
 
-            const player = games[code].players[player_index];
-
+            let player = games[code].players[player_index];
             if (player.bet == player.tricks_won)
             {
                 if (player.bet == 0) {
-                    games[code].players[player_index].score += games[code].round * 10;
+                    games[code].players[player_index].score += round * 10;
                 }
                 else {
                     games[code].players[player_index].score += player.bet * 20;
                 }
-
                 _bonusPoints(code, player_index);
-
             }else{
                 if (player.bet == 0) {
-                    games[code].players[player_index].score -= games[code].round * 10;
+                    games[code].players[player_index].score -= round * 10;
                 }
                 else {
                     games[code].players[player_index].score -= Math.abs(player.bet - player.tricks_won) * 10;
                 }
             }
+
+            
         }
     }
 
@@ -776,10 +855,17 @@ var GAME = (function() {
         return array;
     }
 
+    // Generate a random lead for the round.
+    function _generateRoundLead(code) {
+        const players_index = Math.floor(Math.random() * games[code].players.length);
+        return games[code].players[players_index].handle;
+    }
+
     // Searches for a player by id
     // -1 if not found.
     function _getPlayerIndex(id, code) {
-        for (let index in games[code].players) {
+        var len = games[code].players.length;
+        for (var index = 0; index < len; ++index) {
             if (games[code].players[index].id == id) return index;
         }
         return -1;
@@ -788,7 +874,8 @@ var GAME = (function() {
     // Searches for a player by handle
     // -1 if not found.
     function _getPlayerIndexByHandle(handle, code) {
-        for (let index in games[code].players) {
+        var len = games[code].players.length;
+        for (var index = 0; index < len; ++index) {
             if (games[code].players[index].handle == handle) return index;
         }
         return -1;
@@ -797,11 +884,11 @@ var GAME = (function() {
     // Obtains the index of a card from a player's hand
     function _getCardIndexFromHand(code, player_index, card) {
         const hand = games[code].players[player_index].hand;
-        for (const hand_index in hand)
-        {
-            const hand_card = hand[hand_index];
+        var len = hand.length;
+        for (var index = 0; index < len; ++index) {
+            const hand_card = hand[index];
             if (_areMatchingCards(hand_card, card)) {
-                return hand_index;
+                return index;
             }
         }
         return -1;
@@ -841,7 +928,7 @@ var GAME = (function() {
         if (
             // Leading rule is not in effect.
             (games[code].details.leading == false) ||
-            // The player has card that matches the leading suit.
+            // The player has a card that matches the leading suit.
             (can_match_leading_suit == false) ||
             // The card is NOT numbered
             (_isNumbered(card) == false) ||

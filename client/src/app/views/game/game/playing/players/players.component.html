@@ -1,25 +1,58 @@
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-header">
-                <i class="fa fa-align-justify"></i> Players
-            </div>
-            <div class="card-body" id="player-container">
-                <table class="table table-striped" >
-                    <thead>
-                        <tr>
-                            <th>Status</th>
-                            <th>Handle</th>
-                            <th>Tricks won</th>
-                            <th>Bet</th>
-                            <th>Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="player-list">
-
-                    </tbody>
-                </table>
-            </div>
+<c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header>
+            <b>Players</b>
+        </c-card-header>
+        <div class="card-body" id="player-container">
+            <ul *ngFor="let player of game.players" class="list-group list-group-horizontal">
+                <ng-container [ngTemplateOutlet]="resolveStatus(player)"
+                            [ngTemplateOutletContext]="{ data: { player: player } }">
+                </ng-container>
+            </ul>
+            <br/>
+            <ul class="list-group list-group-horizontal">
+                <li class="list-group-item active">To Play</li>
+                <li class="list-group-item list-group-item-warning">Lead</li>
+                <li class="list-group-item list-group-item-success">Self</li>
+            </ul>
         </div>
-    </div>
-</div>
+      </c-card>
+    </c-col>
+  </c-row>
+
+<ng-template #activePlayer
+            let-data="data">
+    <li class="list-group-item active">data.player.handle</li>
+    <li class="list-group-item active">data.player.score</li>
+    <li class="list-group-item active">
+        <div [style.color]="data.player.tricks_won == data.player.bet ? green : red">data.player.tricks_won</div> / data.player.bet
+    </li>
+</ng-template>
+
+<ng-template #leadPlayer
+            let-data="data">
+    <li class="list-group-item list-group-item-warning">data.player.handle</li>
+    <li class="list-group-item list-group-item-warning">data.player.score</li>
+    <li class="list-group-item list-group-item-warning">
+        <div [style.color]="data.player.tricks_won == data.player.bet ? green : red">data.player.tricks_won</div> / data.player.bet
+    </li>
+</ng-template>
+
+<ng-template #selfPlayer
+            let-data="data">
+    <li class="list-group-item list-group-item-success">data.player.handle</li>
+    <li class="list-group-item list-group-item-success">data.player.score</li>
+    <li class="list-group-item list-group-item-success">
+        <div [style.color]="data.player.tricks_won == data.player.bet ? green : red">data.player.tricks_won</div> / data.player.bet
+    </li>
+</ng-template>
+
+<ng-template #defaultPlayer
+            let-data="data">
+    <li class="list-group-item list-group-item-light">data.player.handle</li>
+    <li class="list-group-item list-group-item-light">data.player.score</li>
+    <li class="list-group-item list-group-item-light">
+        <div [style.color]="data.player.tricks_won == data.player.bet ? green : red">data.player.tricks_won</div> / data.player.bet
+    </li>
+</ng-template>

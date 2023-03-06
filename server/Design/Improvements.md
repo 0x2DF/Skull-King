@@ -1,26 +1,36 @@
 # Tasks
 ## Server:
-+ when applicable: let/var -> const
-+ disconnect
-+ handle effects (Another game state to handle post effects?)
-    - perhaps callback effect on card definition?
-+ Error handling
-+ Annouce lobby when user disconnects
-+ Lobby timeout (Time to live)
++ Card Validation
+    - Wildcards & special cards
+    - Leading card rule not working properly
++ Scoring
+    - NaN score values
++ Card effect handling
 + Game settings
     - Game Modes
     - Lobby timeout
     - Betting timeout
-+ Address TODO's
++ Disconnect
++ Lobby timeout (Time to live)
++ Annouce lobby when user disconnects
 + Join mid game
     - if lobby has a spot, new user can take spot (new score, skips current round)
 
 ## Client:
-+ User experience
-+ Error toasts
++ Players list status
++ Hand UI
++ Error handling & toasts
 + Betting
     - Player List (order and who has bet)
     - Betting timeout
++ User experience
++ Errors:
+    + Incorrect lobby redirect 
+        1) Enter wrong lobby code 
+        2) 'enter lobby'
+        3) Enter valid lobby code
+        4) 'enter lobby'
+        5) 404 redirect
 
 # Brainstorming
 ## Card Concepts:

@@ -11,6 +11,7 @@ import {
   ButtonGroupModule,
   ButtonModule,
   CardModule,
+  CarouselModule,
   FormModule,
   GridModule,
   ModalModule,
@@ -34,6 +35,7 @@ import { BettingHandComponent } from './game/betting/hand/hand.component';
 import { PlayingComponent } from './game/playing/playing.component';
 import { PlayingDetailsComponent } from './game/playing/details/details.component';
 import { PlayingHandComponent } from './game/playing/hand/hand.component';
+import { PlayingHelpComponent } from './game/playing/help/help.component';
 import { PlayingPlayersComponent } from './game/playing/players/players.component';
 import { ScoreBoardComponent } from './game/scoreboard/scoreboard.component';
 import { HandleComponent } from './handle/handle.component';
@@ -56,6 +58,7 @@ import { WidgetsModule } from '../widgets/widgets.module';
     ButtonGroupModule,
     ButtonModule,
     CardModule,
+    CarouselModule,
     ChartjsModule,
     CommonModule,
     FormModule,
@@ -87,6 +90,7 @@ import { WidgetsModule } from '../widgets/widgets.module';
     PlayingComponent,
     PlayingDetailsComponent,
     PlayingHandComponent,
+    PlayingHelpComponent,
     PlayingPlayersComponent,
     RulesComponent,
     ScoreBoardComponent,

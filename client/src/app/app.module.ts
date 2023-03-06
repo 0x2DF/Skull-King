@@ -18,8 +18,6 @@ import { AppComponent } from './app.component';
 
 // Import containers
 import {
-  DefaultFooterComponent,
-  DefaultHeaderComponent,
   DefaultLayoutComponent,
 } from './containers';
 
@@ -41,6 +39,7 @@ import {
   SharedModule,
   SidebarModule,
   TabsModule,
+  ToastModule,
   UtilitiesModule,
 } from '@coreui/angular';
 
@@ -51,8 +50,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 };
 
 const APP_CONTAINERS = [
-  DefaultFooterComponent,
-  DefaultHeaderComponent,
   DefaultLayoutComponent,
 ];
 
@@ -81,6 +78,7 @@ const APP_CONTAINERS = [
     SidebarModule,
     SharedModule,
     TabsModule,
+    ToastModule,
     ListGroupModule,
     ProgressModule,
     ListGroupModule,

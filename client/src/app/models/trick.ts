@@ -5,4 +5,5 @@ export interface Trick {
     to_play : string;
     cards : PlayerCard[];
     winner : PlayerCard;
+    points : number;
 }

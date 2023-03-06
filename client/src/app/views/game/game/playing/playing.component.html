@@ -1,26 +1,18 @@
-<!--
-      <div class="animated fadeIn">
-          <div class="row">
-              <div class="col-sm-6 col-md-2"></div>
-              <div class="col-sm-6 col-md-12">
-                  <div class="card">
-                      <div class="card-header">
-                          <strong>Playing</strong>
-                          <div class="card-header-actions">
-                          <span class="badge badge-success">Round: {{game.sub_round + 1}}/{{game.round}}</span>
-                          <span class="badge badge-pill badge-danger">Time left: XX</span>
- -->
-                          <!-- <game-timer></game-timer> -->
-<!--                        </div>
-                    </div>
-                    <div class="card-body">
-                        <game-playing-players></game-game-players>
-                        <game-playing-hand></game-hand>
-                        <game-playing-details></game-game-details>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-2"></div>
-        </div>
-    </div>
- -->
+<c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header>
+          <b>Playing</b>
+        </c-card-header>
+        <c-card-body>
+            <c-alert color="success">
+                <h4><strong>{{ game.rounds[game.details.round].tricks[game.details.trick].lead }}</strong> leads the round.</h4>
+            </c-alert>
+
+            <game-playing-players></game-playing-players>
+            <game-playing-hand></game-playing-hand>
+            <game-playing-details></game-playing-details>
+        </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

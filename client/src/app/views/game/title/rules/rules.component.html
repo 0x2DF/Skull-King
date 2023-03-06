@@ -1,13 +1,24 @@
 <button cButton color="info" variant="outline" (click)="toggleRules()" cButton>Rules</button>
-<c-modal id="rulesModal" [visible]="rulesVisible" (visibleChange)="handleRulesChange($event)">
+
+<c-modal id="rulesModal" [visible]="visible" (visibleChange)="handleRulesChange($event)" size="xl">
   <c-modal-header>
     <h5 cModalTitle>Rules</h5>
     <button (click)="toggleRules()" cButtonClose></button>
   </c-modal-header>
-  <c-modal-body>Woohoo, you&#39;re reading this text in a modal!</c-modal-body>
-  <c-modal-footer>
-    <button (click)="toggleRules()" cButton color="secondary">
-      Close
-    </button>
-  </c-modal-footer>
+  <c-modal-body>
+    <c-carousel [interval]="0">
+      <c-carousel-inner>
+        <c-carousel-item *ngFor="let slide of slides">
+          <img
+            [src]="slide.src"
+            alt="{{slide.title}}"
+            class="d-block w-100"
+            loading="lazy"
+          />
+        </c-carousel-item>
+      </c-carousel-inner>
+      <c-carousel-control [routerLink] caption="Previous" direction="prev"></c-carousel-control>
+      <c-carousel-control [routerLink] caption="Next" direction="next"></c-carousel-control>
+    </c-carousel>
+  </c-modal-body>
 </c-modal>

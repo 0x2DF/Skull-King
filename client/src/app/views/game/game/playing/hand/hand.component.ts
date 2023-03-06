@@ -14,14 +14,14 @@ export class PlayingHandComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("BettingComponent onInit()");
+    console.log("PlayingHandComponent onInit()");
     this.subscribeHand();
     this.gameService.refreshHand();
   }
 
   ngOnDestroy(): void {
     this.handSubscription.unsubscribe();
-    console.log("BettingHandComponent ngOnDestroy() handSubscription.unsubscribe()");
+    console.log("PlayingHandComponent ngOnDestroy() handSubscription.unsubscribe()");
   }
 
   hand = <Card[]>([]);
@@ -29,23 +29,24 @@ export class PlayingHandComponent implements OnInit {
   subscriptions = {
     "hand": false,
   }
+  TIGRESS_ID = 7;
 
   subscribeHand(): void {
-    console.log("BettingHandComponent subscribeHand()");
+    console.log("PlayingHandComponent subscribeHand()");
     if (!this.subscriptions["hand"]) {
       this.handSubscription = this.gameService.sharedHand.subscribe(hand => {
-        console.log("BettingHandComponent gameService.sharedGame.subscribe");
+        console.log("PlayingHandComponent gameService.sharedGame.subscribe");
         this.hand = <Card[]>hand;
       });
       this.subscriptions["hand"] = true;
     }
   }
 
-  playTrick(card: Card){
-    // if (trick.id == 72){
-    //   let tigress_switch = document.getElementById(`${trick.id}_switch`) as HTMLInputElement;
-    //   trick.type = (tigress_switch.checked == true ? 'Pirate' : 'Escape');
-    // }
-    // this.gameService.playTrick(trick);
+  playCard(card: Card){
+    if (card.id == this.TIGRESS_ID){
+      let tigress_switch = document.getElementById(`${card.id}_switch`) as HTMLInputElement;
+      card.type = (tigress_switch.checked == true ? 'Pirate' : 'Escape');
+    }
+    this.gameService.playCard(card);
   }
 }

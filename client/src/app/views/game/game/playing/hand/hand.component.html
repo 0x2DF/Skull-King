@@ -1,20 +1,35 @@
-<!-- <div class="row">
-    <div class="col-12 col-lg-12">
-        <div class="card">
-            <div class="card-header">
-                <i class="fa fa-align-justify"></i> List of tricks
-            </div>
-            <div class="row">
-                <div class="col-2 col-lg-2" style="min-width: 140px; min-height: 230px;" *ngFor="let trick of hand">
-                    <div class="card">
-                            <img (click)="playTrick(trick)" style="width: 100%; height: 100%;" src="assets/images/small/{{trick.id}}.jpg">
-                        <label class="switch switch-label switch-primary" style="width: 100%" *ngIf="trick.id == 72">
-                            <input id="{{trick.id}}_switch" type="checkbox" class="switch-input" checked>
-                            <span class="switch-slider" data-checked="Pirate" data-unchecked="Escape"></span>
-                        </label>
-                    </div>
+<c-row>
+    <c-col>
+        <c-card class="mb-4">
+            <c-card-header>
+                <b>Your tricks</b>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <ng-container *ngTemplateOutlet="help"></ng-container>
                 </div>
-            </div>
-        </div>
-      </div>
-</div> -->
+            </c-card-header>
+            <c-card-body>
+                <c-card-group class="mb-4">
+                    <c-card *ngFor="let card of hand">
+                        <ng-container [ngTemplateOutlet]="card.valid == true ? validCard : invalidCard"
+                                        [ngTemplateOutletContext]="{ data: { card: card } }">
+                        </ng-container>
+                    </c-card>
+                </c-card-group>
+            </c-card-body>
+        </c-card>
+    </c-col>
+</c-row>
+
+<ng-template #help>
+    <game-playing-help></game-playing-help>
+</ng-template>
+
+<ng-template #validCard
+            let-data="data">
+    <img (click)="playCard(data.card)" style="width: 150px; height: 200px;" cCardImg="top" src="./assets/img/deck/{{data.card.id}}.png">
+</ng-template>
+
+<ng-template #invalidCard
+            let-data="data">
+    <img style="width: 150px; height: 200px; filter: grayscale(100%)" cCardImg="top" src="./assets/img/deck/{{data.card.id}}.png">
+</ng-template>

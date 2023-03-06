@@ -45,7 +45,7 @@ var LOBBY = (function() {
 
         clients[id] = { lobby_code: lobby_code, handle: null };
 
-        console.log(lobbies[lobby_code]);
+        // console.log(lobbies[lobby_code]);
         return { lobby :  _censorLobby(lobbies[lobby_code], clients) };
     }
 
@@ -92,14 +92,14 @@ var LOBBY = (function() {
 
         // Add user to lobby
         lobbies[lobby_code].clients.push(id);
-        console.log('{} joined {}'.format(id, lobby_code));
+        // console.log('{} joined {}'.format(id, lobby_code));
 
         // Set lobby admin
         if (lobbies[lobby_code].admin == null){
             lobbies[lobby_code].admin = id;
         }
 
-        console.log(lobbies[lobby_code]);
+        // console.log(lobbies[lobby_code]);
         return { lobby : _censorLobby(lobbies[lobby_code], clients) };
     }
 

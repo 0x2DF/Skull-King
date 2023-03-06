@@ -14,7 +14,7 @@ export class BettingHandComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("BettingComponent onInit()");
+    console.log("BettingHandComponent onInit()");
     this.subscribeHand();
     this.gameService.refreshHand();
   }

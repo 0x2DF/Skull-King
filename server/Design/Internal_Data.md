@@ -71,7 +71,8 @@ Trick[Game.trick] = {
     lead: player_handle,
     to_play: player_handle,
     cards: []PlayerCard,
-    winner: PlayerCard
+    winner: PlayerCard,
+    points: integer,
 }
 
 Bets[handle] = { integer }

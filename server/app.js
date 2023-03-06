@@ -134,7 +134,6 @@ io.on("connection", socket => {
         if ("game" in response) {
             io.to(response.game.details.code).emit(Triggers.refreshLobby, { lobby : lobby });
             io.to(response.game.details.code).emit(Triggers.refreshGame, response);
-            console.log("game: ", response.game)
         }
 
     });
@@ -150,7 +149,6 @@ io.on("connection", socket => {
 
         if ("hand" in response) {
             socket.emit(Triggers.refreshHand, response);
-            console.log("hand: ", response.hand)
         }
     });
 
@@ -173,6 +171,7 @@ io.on("connection", socket => {
         
         if ("game" in response) {
             io.to(response.game.details.code).emit(Triggers.refreshGame, response);
+            // console.log("game: ", response.game)
         }
     });
 
@@ -180,6 +179,7 @@ io.on("connection", socket => {
     // [<-]: play-card {error}
     // OR
     // [<=]: refresh-game {game}
+    // [<-]: refresh-hand {hand}
     socket.on(Triggers.playCard, data => {
         if (("card" in data) == false) {
             return;
@@ -187,12 +187,18 @@ io.on("connection", socket => {
 
         const response = Game.playCard(socket, data.card, Client.clients);
         if ("error" in response) {
-            socket.emit(Triggers.playCard, response);
+            socket.emit(Triggers.refreshGame, response);
             return;
         }
 
         if ("game" in response) {
-            io.to(response.game.details.code).emit(Triggers.refreshGame, response);
+            // console.log("game: ", response.game)
+            io.to(response.game.details.code).emit(Triggers.refreshGame, {game : response.game});
+        }
+
+        if ("hand" in response) {
+            // console.log("hand: ", response.hand)
+            socket.emit(Triggers.refreshHand, {hand : response.hand});
         }
     });
 
