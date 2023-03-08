@@ -37,6 +37,8 @@ export class PlayingComponent implements OnInit {
       this.gameSubscription = this.gameService.sharedGame.subscribe(game => {
         console.log("PlayingComponent gameService.sharedGame.subscribe");
         this.game = <Game>game;
+        
+        this.gameService.refreshHand();
       });
       this.subscriptions["game"] = true;
     }

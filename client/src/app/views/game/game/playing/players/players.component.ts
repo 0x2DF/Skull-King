@@ -24,9 +24,6 @@ export class PlayingPlayersComponent implements OnInit {
   game: Game = Game();
   user: User = User();
 
-  green = "green";
-  red = "red";
-
   gameSubscription!: Subscription;
   subscriptions = {
     "game": false,
@@ -49,66 +46,51 @@ export class PlayingPlayersComponent implements OnInit {
     const trick = this.game.details.trick;
 
     if (player.handle == this.game.rounds[round].tricks[trick].to_play) {
-      return "activePlayer"
+      return "list-group-item-warning"
     }
     if (player.handle == this.game.rounds[round].tricks[trick].lead) {
-      return "leadPlayer"
+      return "list-group-item-success"
     }
-    if (player.handle == this.user.handle) {
-      return "selfPlayer"
-    }
-    return "defaultPlayer"
+    return "list-group-item-light"
   }
 
   refreshPlayers(): void {
-    // let player_list = document.getElementById('player-list');
-    // if (player_list != null) {
-    //   player_list.innerHTML = '';
+    let player_list = document.getElementById('player-container');
+    if (player_list != null) {
+      player_list.innerHTML = '';
 
-    //   const round = this.game.details.round;
-    //   const trick = this.game.details.trick;
+      this.game.players.forEach((u, i) => {
+        const ul = document.createElement('ul');
+        ul.className = `list-group list-group-horizontal`;
+        const li_handle = document.createElement('li');
+        const li_score = document.createElement('li');
+        const li_bet = document.createElement('li');
+        const span_bet = document.createElement('span');
 
-    //   this.game.players.forEach((u, i) => {
-    //     const tr = document.createElement('tr');
-    //     const td_status = document.createElement('td');
-    //     const td_handle = document.createElement('td');
-    //     const td_tricks_won = document.createElement('td');
-    //     const td_bet = document.createElement('td');
-    //     const td_score = document.createElement('td');
-    //     const span_rl = document.createElement('span');
-    //     const span_tp = document.createElement('span');
+        li_handle.innerHTML = `${u.handle} `;
+        li_handle.className = `list-group-item ${this.resolveStatus(u)}`;
+        ul.appendChild(li_handle);
 
-    //     td_status.innerHTML = "";
-    //     if (this.game.players[i].handle == 
-    //         this.game.rounds[round].tricks[trick].lead){
-    //       span_rl.innerHTML = 'Round Leader';
-    //       span_rl.className = "badge badge-success";
-    //       td_status.append(span_rl);
-    //     }
-    //     if (this.game.players[i].handle == 
-    //       this.game.rounds[round].tricks[trick].to_play){
-    //       span_tp.innerHTML = 'To Play';
-    //       span_tp.className = "badge badge-warning";
-    //       td_status.append(span_tp);
-    //     }
-    //     tr.append(td_status);
+        li_score.innerHTML = `${u.score} `;
+        li_score.className = `list-group-item ${this.resolveStatus(u)}`;
+        ul.appendChild(li_score);
 
-    //     td_handle.innerHTML = `${u.handle} `;
-    //     td_handle.className = (this.user.handle == u.handle) ? 'my-0 text-primary' : 'my-0';
-    //     tr.append(td_handle);
+        span_bet.innerHTML = `${u.tricks_won}`
+        let color = "red";
+        if (u.tricks_won == u.bet) {
+          color = "green"
+        }
+        span_bet.style.color = color;
+        li_bet.appendChild(span_bet);
 
-    //     td_tricks_won.innerHTML = `${u.tricks_won}`;
-    //     tr.append(td_tricks_won);
+        li_bet.innerHTML += `/${u.bet}`;
+        li_bet.className = `list-group-item ${this.resolveStatus(u)}`;
+        ul.appendChild(li_bet);
 
-    //     td_bet.innerHTML = `${u.bet}`;
-    //     tr.append(td_bet);
-
-    //     td_score.innerHTML = `${u.score}`;
-    //     tr.append(td_score);
-    //     if (player_list != null) {
-    //       player_list.appendChild(tr);
-    //     }
-    //   });
-    // }
+        if (player_list != null) {
+          player_list.appendChild(ul);
+        }
+      });
+    }
   }
 }

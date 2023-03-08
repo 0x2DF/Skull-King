@@ -270,7 +270,6 @@ var GAME = (function() {
                 // Deal random card
                 let card_index = Math.floor(Math.random() * cards.length);
                 const card = Deck.getCard(cards[card_index]);
-                console.log("Dealt card ", card.id, "to player ", games[code].players[player_index].handle)
                 let new_card = {
                     id: card.id,
                     name: card.name,
@@ -400,6 +399,7 @@ var GAME = (function() {
 
         // Verify if the card can be played
         // Does the player possess a card with a suit that matches the leading card?
+        debugger;
         const can_match_leading_suit = _hasMatchingLeadingCardSuit(code, player.hand);
 
         if ( _isCardValid(code, player.hand[hand_index], can_match_leading_suit) == false) {
@@ -799,7 +799,7 @@ var GAME = (function() {
     // Updates the players score for the round.
     function _updatePlayersScore(code)
     {
-        const round = games[code].round;
+        const round = games[code].details.round;
         for (let player_index in games[code].players){
 
             let player = games[code].players[player_index];
@@ -820,8 +820,6 @@ var GAME = (function() {
                     games[code].players[player_index].score -= Math.abs(player.bet - player.tricks_won) * 10;
                 }
             }
-
-            
         }
     }
 
@@ -904,7 +902,7 @@ var GAME = (function() {
         const leading_card = games[code].details.winning.card;
 
         // Check if the user has a card with the same suit as the leading card.
-        for (const hand_index in hand) {
+        for (let hand_index in hand) {
             const card = hand[hand_index];
             if (leading_card.name == card.name) return true;
         }
@@ -935,7 +933,7 @@ var GAME = (function() {
             // The card is a Jolly Ranger
             (card.name == 'Jolly Ranger') ||
             // The card matches the leading card's suit.
-            (card.type == leading_card.type)) {
+            (card.name == leading_card.name)) {
             return true;
         }
 

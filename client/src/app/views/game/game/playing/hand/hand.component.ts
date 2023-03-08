@@ -45,7 +45,7 @@ export class PlayingHandComponent implements OnInit {
   playCard(card: Card){
     if (card.id == this.TIGRESS_ID){
       let tigress_switch = document.getElementById(`${card.id}_switch`) as HTMLInputElement;
-      card.type = (tigress_switch.checked == true ? 'Pirate' : 'Escape');
+      card.type = (tigress_switch.checked == true ? 'Pirate' : 'Wildcard');
     }
     this.gameService.playCard(card);
   }

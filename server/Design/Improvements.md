@@ -1,10 +1,7 @@
 # Tasks
 ## Server:
-+ Card Validation
-    - Wildcards & special cards
-    - Leading card rule not working properly
 + Scoring
-    - NaN score values
+    - Bonus points
 + Card effect handling
 + Game settings
     - Game Modes
@@ -23,6 +20,7 @@
 + Betting
     - Player List (order and who has bet)
     - Betting timeout
++ Tigress
 + User experience
 + Errors:
     + Incorrect lobby redirect 
