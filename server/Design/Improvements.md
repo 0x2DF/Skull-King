@@ -5,25 +5,25 @@
 + Card effect handling
     - Pirates
 + White whale
-+ If first player plays coins and second has coins, the other card is disabled
 + Errors/Messages
 + Game settings
     - Game Modes
     - Lobby timeout
     - Betting timeout
 + Disconnect
+    - Announce lobby
 + Lobby timeout (Time to live)
-+ Annouce lobby when user disconnects
 + Join mid game
     - if lobby has a spot, new user can take spot (new score, skips current round)
 
 ## Client:
-+ Errors/Messages handling w/toasts
++ User experience
+    - Errors/Messages handling w/toasts
+    - Display list of played tricks in round details
 + Betting
     - Player List (order and who has bet)
     - Betting timeout
 + Card Effect Handling
-+ User experience
 + Remove console logs
 + Errors:
     + Incorrect lobby redirect 

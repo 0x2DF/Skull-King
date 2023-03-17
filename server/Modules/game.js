@@ -720,10 +720,11 @@ var GAME = (function() {
       
     // Updates winning card
     function _updateWinningCard(code, player_index, card) {
-        // No current winning card
+        // No current winning card.
         if (games[code].details.winning == null) {
             _setWinning(code, player_index, card);
 
+            // Set leading rule to false if a special card other than Wildcard has been played.
             if (['Numbered', 'Wildcard'].includes(card.type) == false) {
                 _setLeading(code, false);
             }
@@ -923,18 +924,21 @@ var GAME = (function() {
     // + The card matches the leading card's suit.
     function _isCardValid(code, card, can_match_leading_suit) {
         // Leading card has not been set.
-        if (games[code].details.winning == null) return true;
+        if (games[code].details.winning == null) { return true; }
 
         // If leading is enabled, leading card = winning card
         const leading_card = games[code].details.winning.card;
+
+        // Leading card is a wildcard.
+        if (_isWildcard(leading_card)) { return true; }
 
         if (
             // Leading rule is not in effect.
             (games[code].details.leading == false) ||
             // The player has a card that matches the leading suit.
             (can_match_leading_suit == false) ||
-            // The card is NOT numbered
-            (_isNumbered(card) == false) ||
+            // The card is special.
+            _isSpecial(card) ||
             // The card is a Jolly Ranger
             (card.name == 'Jolly Ranger') ||
             // The card matches the leading card's suit.
@@ -948,6 +952,16 @@ var GAME = (function() {
     // Returns true if the card is a numbered type.
     function _isNumbered(card) {
         return card.type == 'Numbered';
+    }
+
+    // Returns true if the card is a special type.
+    function _isSpecial(card) {
+        return _isNumbered(card) == false;
+    }
+
+    // Returns true if the card is wildcard type.
+    function _isWildcard(card) {
+        return card.type == 'Wildcard';
     }
 
     // Returns true if there is a match between the cards name and value.
@@ -997,8 +1011,8 @@ var GAME = (function() {
         const cards = games[code].rounds[round].tricks[trick].cards;
         let highest_card_index = -1;
         let highest_value = 0;
-        for (const card_index in cards) {
-            const card = cards[card_index].card;
+        for (let card_index in cards) {
+            let card = cards[card_index].card;
             if (card.value > highest_value) {
                 highest_card_index = card_index;
                 highest_value = card.value;
