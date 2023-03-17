@@ -91,3 +91,9 @@ Card = {
     type: string,
     [~] valid: boolean
 }
+
+# -- Error --
+Error = {
+    name: string,
+    description: string,
+}

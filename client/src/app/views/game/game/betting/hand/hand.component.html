@@ -1,14 +1,27 @@
 <c-row>
-    <c-card class="mb-4">
-        <c-card-header>
-            <b>List of tricks</b>
-        </c-card-header>
-        <c-card-body>
-            <c-card-group class="mb-3">
-                <c-card *ngFor="let card of hand">
-                    <img style="width: 150px; height: 200px;" cCardImg="top" src="./assets/img/deck/{{card.id}}.png">
-                </c-card>
-            </c-card-group>
-        </c-card-body>
-    </c-card>
+    <c-col xs="12">
+        <c-card class="mb-4">
+            <c-card-header>
+                <b>List of tricks</b>
+            </c-card-header>
+            <c-card-body>
+                <c-row [gutter]="5" class="mb-5" [md]="5" [xs]="3">
+                    <c-col *ngFor="let card of hand">
+                      <c-card class="h-100">
+                        <img cImg cCardImg="top" src="./assets/img/deck/{{card.id}}.png">
+                        <!-- <c-card-body>
+                          <h5 cCardTitle>Card title</h5>
+                          <p cCardText>
+                            {{card.body}}
+                          </p>
+                        </c-card-body>
+                        <c-card-footer>
+                          <small class="text-medium-emphasis">Last updated {{i+10}} mins ago</small>
+                        </c-card-footer> -->
+                      </c-card>
+                    </c-col>
+                </c-row>
+            </c-card-body>
+        </c-card>
+    </c-col>
 </c-row>

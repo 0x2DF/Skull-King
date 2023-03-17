@@ -7,9 +7,9 @@
       <c-card-body>
         <img cCardImg="top" *ngIf="game.details.winning != null" src="./assets/img/deck/{{game.details.winning.card.id}}.png" style="width: 113px; height: 150px;">
         <br>
-        <c-badge class="me-1" color="success">Round: {{game.details.trick + 1}}/{{game.details.round + 1}}</c-badge>
-        <c-badge class="me-1" color="danger">Turn: {{game.rounds[game.details.round].tricks[game.details.trick].to_play}}</c-badge>
-        <c-badge class="me-1" color="warning">Winning: {{game.details.winning.player}}</c-badge>
+        <c-badge class="me-1" color="danger">Round: {{game.details.trick + 1}}/{{game.details.round + 1}}</c-badge>
+        <c-badge class="me-1" color="warning">Turn: {{game.rounds[game.details.round].tricks[game.details.trick].to_play}}</c-badge>
+        <c-badge class="me-1" color="success" *ngIf="game.details.winning != null">Winning: {{game.details.winning.player}}</c-badge>
       </c-card-body>
     </c-card>
   </c-col>

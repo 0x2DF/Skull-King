@@ -179,6 +179,7 @@ io.on("connection", socket => {
     // [<-]: play-card {error}
     // OR
     // [<=]: refresh-game {game}
+    // [<=]: refresh-game {message}
     // [<-]: refresh-hand {hand}
     socket.on(Triggers.playCard, data => {
         if (("card" in data) == false) {
@@ -191,13 +192,16 @@ io.on("connection", socket => {
             return;
         }
 
-        if ("game" in response) {
-            // console.log("game: ", response.game)
-            io.to(response.game.details.code).emit(Triggers.refreshGame, {game : response.game});
+        if ("game" in response && "message" in response) {
+            if ("name" in response.message) {
+                io.to(response.game.details.code).emit(Triggers.refreshGame, {game : response.game, error : response.message});
+            }
+            else {
+                io.to(response.game.details.code).emit(Triggers.refreshGame, {game : response.game});
+            }
         }
 
         if ("hand" in response) {
-            // console.log("hand: ", response.hand)
             socket.emit(Triggers.refreshHand, {hand : response.hand});
         }
     });

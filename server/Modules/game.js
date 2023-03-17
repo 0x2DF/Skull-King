@@ -47,6 +47,8 @@ var GAME = (function() {
         _initGame(lobbies[lobby_code], clients);
         _dealCards(lobby_code);
 
+        console.log(`Games TOTAL : ${Object.keys(games).length}`);
+
         return {
             game : _redactGame(games[lobby_code]),
         };
@@ -96,11 +98,12 @@ var GAME = (function() {
         response = _playCard(code, player_index, card);
         if ("error"  in response) return response;
 
-        response = _getPlayerHand(code, player_index)
+        let hand_response = _getPlayerHand(code, player_index)
 
         return {
-            game : _redactGame(games[code]),
-            hand : response.hand
+            game    : _redactGame(games[code]),
+            hand    : hand_response.hand,
+            message : response.message
         };
     }
 
@@ -425,10 +428,10 @@ var GAME = (function() {
         // Trick concludes when every player has played a card.
         if (games[code].rounds[round].tricks[trick].to_play == 
             games[code].rounds[round].tricks[trick].lead) {
-            _concludeTrick(code, round, trick);
+            return _concludeTrick(code, round, trick);
         }
 
-        return {};
+        return { message : {} };
     }
 
     // Moves the turn to the next player.
@@ -465,9 +468,11 @@ var GAME = (function() {
         // Check if the round is over
         if (trick == round){
             _concludeRound(code);
+            return { message: { name: "GameRoundOver"} };
         }else{
             // Prepares the game values for following trick
             _prepareNextTrick(code);
+            return { message: { name: "GameTrickOver"}  };
         }
     }
 

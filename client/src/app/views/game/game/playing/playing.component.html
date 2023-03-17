@@ -1,3 +1,7 @@
+<div class="position-relative">
+  <game-toast [service]="gameService"></game-toast>
+</div>
+
 <c-row ngPreserveWhitespaces>
     <c-col xs="12">
       <c-card class="mb-4">
@@ -5,13 +9,13 @@
           <b>Playing</b>
         </c-card-header>
         <c-card-body>
-            <c-alert color="success">
-                <h4><strong>{{ game.rounds[game.details.round].tricks[game.details.trick].lead }}</strong> leads the round.</h4>
+            <c-alert color="info">
+                <h4><strong>{{ game.rounds[game.details.round].tricks[game.details.trick].to_play }}</strong>'s turn</h4>
             </c-alert>
 
-            <game-playing-players></game-playing-players>
-            <game-playing-hand></game-playing-hand>
             <game-playing-details></game-playing-details>
+            <game-playing-players [user]="user"></game-playing-players>
+            <game-playing-hand></game-playing-hand>
         </c-card-body>
     </c-card>
   </c-col>

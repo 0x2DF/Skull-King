@@ -1,3 +1,7 @@
+<div class="position-relative">
+  <game-toast [service]="lobbyService"></game-toast>
+</div>
+
 <c-row ngPreserveWhitespaces>
   <c-col xs="12">
     <c-card [cBorder]="{top: {color: borderColor, width: 3}}" class="text-center mb-4">
@@ -6,6 +10,9 @@
       </c-card-header>
       <c-card-body>
         <form cForm>
+          <div class="clearfix">
+            <img cImg rounded allign="center" src="./assets/img/logo.jpg" height="30%" width="30%">
+          </div>
           <div class="mb-4">
             <!-- <game-title-toast></game-title-toast> -->
           </div>
@@ -32,6 +39,17 @@
               <ng-container *ngTemplateOutlet="rules"></ng-container>
             </div>
           </div>
+          <hr/>
+          <c-footer>
+            <div>
+              <span>Support </span>
+              <a href="https://www.grandpabecksgames.com/" target="_blank">Grandpa Beck's Games</a>
+            </div>
+            <div class="ms-auto">
+              <span>Contribute </span>
+              <a href="https://github.com/0x2DF/Skull-King" target="_blank">Github</a>
+            </div>
+          </c-footer>
         </form>
       </c-card-body>
     </c-card>

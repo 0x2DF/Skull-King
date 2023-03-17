@@ -1,31 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 
-import { Error } from '../../../../models/error'
-
-import { LobbyService } from '../../../../services/lobby.service';
+import { Error } from '../../../models/error'
 
 @Component({
-    selector: 'game-title-toast',
+    selector: 'game-toast',
     templateUrl: './toast.component.html',
 })
-export class TitleToastComponent implements OnInit {
+export class ToastComponent implements OnInit {
   constructor(
-    private lobbyService: LobbyService
     ) {
-      this.error = {name:""};
-      this.subscribeError();
+      // this.error = {name:""};
+      console.log(this.service);
   }
 
   ngOnInit(): void { 
-    console.log("TitleToastComponent ngOnInit()");
+    console.log("ToastComponent ngOnInit()");
+    this.subscribeError();
   }
 
   ngOnDestroy() {
-    console.log("Game component ngOnDestroy()")
+    console.log("Toast component ngOnDestroy()")
     this.errorSubscription.unsubscribe();
-    console.log("GameComponent ngOnDestroy() lobbySubscription.unsubscribe")
+    console.log("ToastComponent ngOnDestroy() lobbySubscription.unsubscribe")
   }
+
+  @Input() service: any;
 
   position = 'top-end';
   visible = false;
@@ -39,9 +39,9 @@ export class TitleToastComponent implements OnInit {
 
   subscribeError(): void {
     if (!this.subscriptions["error"]) {
-      this.errorSubscription = this.lobbyService.sharedError.subscribe(
-        error => {
-          console.log("TitleToastComponent subscribeError() lobbyService.sharedError.subscribe");
+      this.errorSubscription = this.service.sharedError.subscribe(
+        (error: Error) => {
+          console.log("ToastComponent subscribeError() lobbyService.sharedError.subscribe");
           this.error = <Error>error;
           this.toggleToast();
         }

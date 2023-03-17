@@ -14,7 +14,7 @@ export class TitleComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private lobbyService: LobbyService,
+    public lobbyService: LobbyService,
   ) {}
 
   ngOnInit(): void {

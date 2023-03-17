@@ -1,9 +1,16 @@
+<div class="position-relative">
+  <game-toast [service]="gameService"></game-toast>
+</div>
+
 <c-row ngPreserveWhitespaces>
     <c-col xs="12">
       <c-card class="mb-4">
         <c-card-header>
           <b>Betting</b>
-          <c-badge class="me-1" color="success">Round: {{game.details.round + 1}}</c-badge>
+          <div align="end">
+            <c-badge class="me-1" color="success">Round: {{game.details.round + 1}}</c-badge>
+            <c-badge class="me-1" color="info">Player: {{user.handle}}</c-badge>
+          </div>
         </c-card-header>
         <c-card-body>
             <c-alert color="success">

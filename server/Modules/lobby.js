@@ -45,7 +45,7 @@ var LOBBY = (function() {
 
         clients[id] = { lobby_code: lobby_code, handle: null };
 
-        // console.log(lobbies[lobby_code]);
+        console.log(`Lobbies TOTAL : ${Object.keys(lobbies).length}`);
         return { lobby :  _censorLobby(lobbies[lobby_code], clients) };
     }
 

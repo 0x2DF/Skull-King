@@ -42,7 +42,7 @@ export class GameService {
       this.socket.on('refresh-game', (data: any) => {
         console.log("received refresh-game");
         if (data.error) { this.error.next(data.error); }
-        else if (data.game) { this.game.next(data.game); }
+        if (data.game) { this.game.next(data.game); }
       });
       this.subscriptions['refresh-game'] = true;
     }
@@ -53,7 +53,7 @@ export class GameService {
       this.socket.on('refresh-hand', (data: any) => {
         console.log("received refresh-hand");
         if (data.error) { this.error.next(data.error); }
-        else if (data.hand) { this.hand.next(data.hand); }
+        if (data.hand) { this.hand.next(data.hand); }
       });
       this.subscriptions['refresh-hand'] = true;
     }

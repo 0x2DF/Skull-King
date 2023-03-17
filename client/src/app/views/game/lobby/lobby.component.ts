@@ -10,7 +10,7 @@ import { LobbyService } from '../../../services/lobby.service';
     templateUrl: './lobby.component.html',
 })
 export class LobbyComponent implements OnInit {
-  constructor(private lobbyService: LobbyService) {
+  constructor(public lobbyService: LobbyService) {
   }
 
   ngOnInit(): void {

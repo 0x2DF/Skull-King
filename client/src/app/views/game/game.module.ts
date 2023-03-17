@@ -13,6 +13,7 @@ import {
   CardModule,
   CarouselModule,
   FormModule,
+  FooterModule,
   GridModule,
   ModalModule,
   NavModule,
@@ -46,7 +47,7 @@ import { LobbyPlayersComponent } from './lobby/players/players.component';
 import { MessagesComponent } from './messages/messages.component';
 import { RulesComponent } from './title/rules/rules.component';
 import { TitleComponent } from './title/title.component';
-import { TitleToastComponent } from './title/toast/toast.component';
+import { ToastComponent } from './toast/toast.component';
 
 import { WidgetsModule } from '../widgets/widgets.module';
 
@@ -63,6 +64,7 @@ import { WidgetsModule } from '../widgets/widgets.module';
     CommonModule,
     FormModule,
     FormsModule,
+    FooterModule,
     GameRoutingModule,
     GridModule,
     IconModule,
@@ -95,7 +97,7 @@ import { WidgetsModule } from '../widgets/widgets.module';
     RulesComponent,
     ScoreBoardComponent,
     TitleComponent,
-    TitleToastComponent
+    ToastComponent
   ]
 })
 export class GameModule {

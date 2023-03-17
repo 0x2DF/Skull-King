@@ -3,6 +3,10 @@
 + Scoring
     - Bonus points
 + Card effect handling
+    - Pirates
++ White whale
++ If first player plays coins and second has coins, the other card is disabled
++ Errors/Messages
 + Game settings
     - Game Modes
     - Lobby timeout
@@ -14,14 +18,13 @@
     - if lobby has a spot, new user can take spot (new score, skips current round)
 
 ## Client:
-+ Players list status
-+ Hand UI
-+ Error handling & toasts
++ Errors/Messages handling w/toasts
 + Betting
     - Player List (order and who has bet)
     - Betting timeout
-+ Tigress
++ Card Effect Handling
 + User experience
++ Remove console logs
 + Errors:
     + Incorrect lobby redirect 
         1) Enter wrong lobby code 
