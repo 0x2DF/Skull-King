@@ -1,0 +1,22 @@
+<c-modal #resolveModal backdrop="static" id="resolveModal" scrollable [visible]="visible" (visibleChange)="handleResolveModalChange($event)">
+  <c-modal-header>
+    <h5 cModalTitle>Resolve Trick</h5>
+    <button [cModalToggle]="resolveModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <img cCardImg="top" *ngIf="card != null" src="./assets/img/deck/{{this.card.id}}.png" style="width: 113px; height: 150px;">
+    <br>
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+  </c-modal-body>
+</c-modal>
+
+
+<ng-template #content>
+  <p>
+  + Select who leads next
+  + Select two cards to discard
+  + `view deck`
+  + +/- [0, 10, 20]
+  + bid +/- [1]
+  </p>
+</ng-template>

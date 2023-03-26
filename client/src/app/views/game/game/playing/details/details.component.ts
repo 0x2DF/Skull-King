@@ -11,6 +11,8 @@ export class PlayingDetailsComponent implements OnInit {
   game: Game = Game();
   trick: Trick[] = [];
 
+  items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
   constructor(
     private gameService: GameService
     ) { }

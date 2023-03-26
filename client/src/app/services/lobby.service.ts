@@ -29,7 +29,7 @@ export class LobbyService{
   private lobby = new BehaviorSubject(this.newLobby);
   sharedLobby = this.lobby.asObservable();
 
-  newError: Error = {name:""};
+  newError: Error = Error();
   private error = new BehaviorSubject(this.newError);
   sharedError = this.error.asObservable();
 

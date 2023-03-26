@@ -1,8 +1,19 @@
+errors:
++ tigress
++ Green 3 -> Whale
+    - whale player won
++ What happens if requests are spammed ?
++ Leading player disconnects
+
+trick resolution
+scoreboard
+
+
 # Tasks
 ## Server:
 + Scoring
     - Bonus points
-+ Card effect handling
++ Trick resolution handling
     - Pirates
 + White whale
 + Errors/Messages
@@ -19,7 +30,7 @@
 ## Client:
 + User experience
     - Errors/Messages handling w/toasts
-    - Display list of played tricks in round details
+    - Display list of played tricks in round details as a collapse with details
 + Betting
     - Player List (order and who has bet)
     - Betting timeout
@@ -43,3 +54,4 @@
 
 ## Game Modes:
 + Winner/Lead handicap = Current winner must bet blind
++ Bren: Uno-like being able to play same number from different color

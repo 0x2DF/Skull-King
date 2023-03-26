@@ -1,34 +1,34 @@
 <c-row>
-    <c-col>
-        <c-card class="mb-4">
-            <c-card-header>
-                <b>Your tricks</b>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <ng-container *ngTemplateOutlet="help"></ng-container>
-                </div>
-            </c-card-header>
-            <c-card-body>
-                <c-row [gutter]="5" class="mb-5" [md]="5" [xs]="3">
-                    <c-col *ngFor="let card of hand">
-                      <c-card class="h-100">
-                        <ng-container [ngTemplateOutlet]="card.valid == true ? validCard : invalidCard"
-                                [ngTemplateOutletContext]="{ data: { card: card } }">
-                        </ng-container>
-                        <!-- <c-card-body>
-                          <h5 cCardTitle>Card title</h5>
-                          <p cCardText>
-                            {{card.body}}
-                          </p>
-                        </c-card-body>
-                        <c-card-footer>
-                          <small class="text-medium-emphasis">Last updated {{i+10}} mins ago</small>
-                        </c-card-footer> -->
-                      </c-card>
-                    </c-col>
-                </c-row>
-            </c-card-body>
-        </c-card>
-    </c-col>
+  <c-col>
+    <c-card class="mb-4">
+      <c-card-header>
+        <b>Your tricks</b>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <ng-container *ngTemplateOutlet="help"></ng-container>
+        </div>
+      </c-card-header>
+      <c-card-body>
+        <c-row [gutter]="5" class="mb-5" [md]="5" [xs]="3">
+          <c-col *ngFor="let card of hand">
+            <c-card class="h-100">
+              <ng-container [ngTemplateOutlet]="card.valid == true ? validCard : invalidCard"
+                      [ngTemplateOutletContext]="{ data: card }">
+              </ng-container>
+              <!-- <c-card-body>
+                <h5 cCardTitle>Card title</h5>
+                <p cCardText>
+                  {{card.body}}
+                </p>
+              </c-card-body>
+              <c-card-footer>
+                <small class="text-medium-emphasis">Last updated {{i+10}} mins ago</small>
+              </c-card-footer> -->
+            </c-card>
+          </c-col>
+        </c-row>
+      </c-card-body>
+    </c-card>
+  </c-col>
 </c-row>
 
 <ng-template #help>
@@ -36,11 +36,24 @@
 </ng-template>
 
 <ng-template #validCard
-            let-data="data">
-    <img cImg fluid rounded (click)="playCard(data.card)" cCardImg="top" src="./assets/img/deck/{{data.card.id}}.png">
+            let-card="data">
+    <ng-container
+      [ngTemplateOutlet]="isTigressCard(card) == true ? tigressCard : nonTigressCard"
+      [ngTemplateOutletContext]="{ data: card }">
+    </ng-container>
 </ng-template>
 
 <ng-template #invalidCard
-            let-data="data">
-    <img cImg fluid rounded style="filter: grayscale(100%)" cCardImg="top" src="./assets/img/deck/{{data.card.id}}.png">
+            let-card="data">
+    <img cImg fluid rounded style="filter: grayscale(100%)" cCardImg="top" src="./assets/img/deck/{{card.id}}.png">
+</ng-template>
+
+<ng-template #nonTigressCard
+            let-card="data">
+            <img cImg fluid rounded (click)="playCard(card)" cCardImg="top" src="./assets/img/deck/{{card.id}}.png">
+</ng-template>
+
+<ng-template #tigressCard
+            let-card="data">
+            <game-playing-hand-tigress [card]="card" (cardEvent)="playTigress($event)"></game-playing-hand-tigress>
 </ng-template>

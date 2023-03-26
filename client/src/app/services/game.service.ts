@@ -25,6 +25,7 @@ export class GameService {
   private subscriptions = {
     'refresh-game': false,
     'refresh-hand': false,
+    'resolve-trick': false,
   }
 
   private game = new BehaviorSubject(Game());
@@ -33,6 +34,12 @@ export class GameService {
   private hand = new BehaviorSubject(<Card[]>([]));
   sharedHand = this.hand.asObservable();
 
+  private card = new BehaviorSubject(Card());
+  sharedCard = this.card.asObservable();
+
+  private data = new BehaviorSubject({});
+  sharedData = this.data.asObservable();
+
   newError: Error = Error();
   private error = new BehaviorSubject(this.newError);
   sharedError = this.error.asObservable();
@@ -40,7 +47,6 @@ export class GameService {
   listenRefreshGame() {
     if (!this.subscriptions['refresh-game']) {
       this.socket.on('refresh-game', (data: any) => {
-        console.log("received refresh-game");
         if (data.error) { this.error.next(data.error); }
         if (data.game) { this.game.next(data.game); }
       });
@@ -51,13 +57,11 @@ export class GameService {
   refreshHand() {
     if (!this.subscriptions['refresh-hand']) {
       this.socket.on('refresh-hand', (data: any) => {
-        console.log("received refresh-hand");
         if (data.error) { this.error.next(data.error); }
         if (data.hand) { this.hand.next(data.hand); }
       });
       this.subscriptions['refresh-hand'] = true;
     }
-    
     this.socket.emit('refresh-hand', null);
   }
 
@@ -69,5 +73,25 @@ export class GameService {
   playCard(card: Card)
   {
     this.socket.emit('play-card', {card: card});
+  }
+
+  listenResolveTrick() {
+    if (!this.subscriptions['resolve-trick']) {
+      this.socket.on('resolve-trick', (data: any) => {
+        console.log("listenResolveTrick");
+        console.log(data);
+        if (data.error) { this.error.next(data.error); }
+        if (data.card) { this.card.next(data.card); }
+        if (data.data) { this.data.next(data.data); }
+      });
+      this.subscriptions['resolve-trick'] = true;
+    }
+    this.socket.emit('resolve-trick', null);
+  }
+
+  resolveTrick(data: any)
+  {
+    console.log("resolveTrick")
+    this.socket.emit('resolve-trick', {data: data});
   }
 }

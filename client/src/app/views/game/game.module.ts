@@ -5,6 +5,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 // coreui
 import {
+  AccordionModule,
   AlertModule,
   AvatarModule,
   BadgeModule,
@@ -17,7 +18,9 @@ import {
   GridModule,
   ModalModule,
   NavModule,
+  OffcanvasModule ,
   ProgressModule,
+  SharedModule,
   TableModule,
   TabsModule,
   ToastModule,
@@ -36,11 +39,12 @@ import { BettingHandComponent } from './game/betting/hand/hand.component';
 import { PlayingComponent } from './game/playing/playing.component';
 import { PlayingDetailsComponent } from './game/playing/details/details.component';
 import { PlayingHandComponent } from './game/playing/hand/hand.component';
+import { PlayingHandTigressComponent } from './game/playing/hand/tigress/tigress.component';
 import { PlayingHelpComponent } from './game/playing/help/help.component';
 import { PlayingPlayersComponent } from './game/playing/players/players.component';
+import { PlayingResolveComponent } from './game/playing/resolve/resolve.component';
 import { ScoreBoardComponent } from './game/scoreboard/scoreboard.component';
 import { HandleComponent } from './handle/handle.component';
-import { HandleToastComponent } from './handle/toast/toast.component';
 import { LobbyComponent } from './lobby/lobby.component';
 import { LobbyOptionsComponent } from './lobby/options/options.component';
 import { LobbyPlayersComponent } from './lobby/players/players.component';
@@ -53,6 +57,7 @@ import { WidgetsModule } from '../widgets/widgets.module';
 
 @NgModule({
   imports: [
+    AccordionModule,
     AlertModule,
     AvatarModule,
     BadgeModule,
@@ -70,8 +75,10 @@ import { WidgetsModule } from '../widgets/widgets.module';
     IconModule,
     ModalModule,
     NavModule,
+    OffcanvasModule,
     ProgressModule,
     ReactiveFormsModule,
+    SharedModule,
     TableModule,
     TabsModule,
     ToastModule,
@@ -84,7 +91,6 @@ import { WidgetsModule } from '../widgets/widgets.module';
     BettingHandComponent,
     GameComponent,
     HandleComponent,
-    HandleToastComponent,
     LobbyComponent,
     LobbyOptionsComponent,
     LobbyPlayersComponent,
@@ -92,8 +98,10 @@ import { WidgetsModule } from '../widgets/widgets.module';
     PlayingComponent,
     PlayingDetailsComponent,
     PlayingHandComponent,
+    PlayingHandTigressComponent,
     PlayingHelpComponent,
     PlayingPlayersComponent,
+    PlayingResolveComponent,
     RulesComponent,
     ScoreBoardComponent,
     TitleComponent,

@@ -44,7 +44,7 @@ export class TitleComponent implements OnInit, OnDestroy {
   subscriptions = {
     "lobby": false,
   }
-  
+
   setColor() {
     this.borderColor = this.colors[Math.floor(Math.random()*this.colors.length)].color;
   }

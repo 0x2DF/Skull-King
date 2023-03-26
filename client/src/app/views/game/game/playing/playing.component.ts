@@ -15,13 +15,11 @@ export class PlayingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("PlayingComponent onInit()");
     this.subscribeGame();
   }
 
   ngOnDestroy(): void {
     this.gameSubscription.unsubscribe();
-    console.log("PlayingComponent ngOnDestroy() gameSubscription.unsubscribe()");
   }
 
   @Input() game: Game = Game();
@@ -32,15 +30,24 @@ export class PlayingComponent implements OnInit {
   }
 
   subscribeGame(): void {
-    console.log("PlayingComponent subscribeGame()");
     if (!this.subscriptions["game"]) {
       this.gameSubscription = this.gameService.sharedGame.subscribe(game => {
-        console.log("PlayingComponent gameService.sharedGame.subscribe");
         this.game = <Game>game;
         
         this.gameService.refreshHand();
       });
       this.subscriptions["game"] = true;
+    }
+  }
+
+  getTrickWinner(): string {
+    let round = this.game.details.round;
+    let trick = this.game.details.trick;
+
+    if (this.game.rounds[round].tricks[trick].winner != null) {
+      return this.game.rounds[round].tricks[trick].winner.player;
+    } else {
+      return "";
     }
   }
 }

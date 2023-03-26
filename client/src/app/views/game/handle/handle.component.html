@@ -1,3 +1,7 @@
+<div class="position-relative">
+  <game-toast [service]="lobbyService"></game-toast>
+</div>
+
 <c-row ngPreserveWhitespaces>
   <c-col xs="12">
     <c-card [cBorder]="{top: {color: borderColor, width: 3}}" class="text-center mb-4">
@@ -18,9 +22,6 @@
               <div class="col-6 d-grid gap-2 mx-auto">
                 <button cButton color="success" variant="outline" (click)="submitName(username.value)">Join</button>
               </div>
-          </div>
-          <div class="row">
-            <!-- <game-handle-toast></game-handle-toast> -->
           </div>
         </form>
       </c-card-body>

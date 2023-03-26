@@ -10,7 +10,51 @@
         <c-badge class="me-1" color="danger">Round: {{game.details.trick + 1}}/{{game.details.round + 1}}</c-badge>
         <c-badge class="me-1" color="warning">Turn: {{game.rounds[game.details.round].tricks[game.details.trick].to_play}}</c-badge>
         <c-badge class="me-1" color="success" *ngIf="game.details.winning != null">Winning: {{game.details.winning.player}}</c-badge>
+        <button cButton cOffcanvasToggle="Offcanvas">Toggle</button>
       </c-card-body>
     </c-card>
   </c-col>
 </c-row>
+
+<c-offcanvas
+  placement="end"
+  id="Offcanvas"
+>
+  <c-offcanvas-header>
+    <h5 cOffcanvasTitle>Round #{{game.details.round}}</h5>
+    <button
+      cButtonClose
+      class="text-reset"
+      cOffcanvasToggle="Offcanvas"
+      aria-label="Close"
+    ></button>
+  </c-offcanvas-header>
+  <c-offcanvas-body>
+    <c-accordion [flush]="true">
+      <c-accordion-item #item0="cAccordionItem" [visible]="false" *ngFor="let trick of [].constructor(game.details.trick + 1); let t = index">
+        <ng-template cTemplateId="accordionHeaderTemplate">
+          <button (click)="item0.toggleItem()" [collapsed]="!item0.visible" cAccordionButton>
+            Trick #{{t + 1}}
+          </button>
+        </ng-template>
+        <ng-template cTemplateId="accordionBodyTemplate">
+          <div class="accordion-body">
+            <c-row [gutter]="3" class="mb-3" [md]="3" [xs]="3">
+              <c-col *ngFor="let pcard of game.rounds[game.details.round].tricks[t].cards">
+                <c-card class="h-100">
+                  <!-- <ng-container [ngTemplateOutlet]="pcard.card.id == game.rounds[game.details.round].tricks[t].winner.card.id ? winningCard : invalidCard"
+                          [ngTemplateOutletContext]="{ data: card }">
+                  </ng-container> -->
+                  <img cImg fluid rounded cCardImg="top" src="./assets/img/deck/{{pcard.card.id}}.png">
+                  <c-card-footer>
+                    <small class="text-medium-emphasis">{{pcard.player}}</small>
+                  </c-card-footer>
+                </c-card>
+              </c-col>
+            </c-row>
+          </div>
+        </ng-template>
+      </c-accordion-item>
+    </c-accordion>
+  </c-offcanvas-body>
+</c-offcanvas>

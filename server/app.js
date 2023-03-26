@@ -193,6 +193,7 @@ io.on("connection", socket => {
         }
 
         if ("game" in response && "message" in response) {
+            // Check if there is a message to relay.
             if ("name" in response.message) {
                 io.to(response.game.details.code).emit(Triggers.refreshGame, {game : response.game, error : response.message});
             }
@@ -206,4 +207,35 @@ io.on("connection", socket => {
         }
     });
 
+    // [->]: resolve-trick {data}
+    // [<-]: resolve-trick {data}
+    socket.on(Triggers.resolveTrick, data => {
+        if (data == null) {
+            const response = Game.getTrickResolutionData(socket, Client.clients);
+            if ("error" in response) {
+                return;
+            }
+            socket.emit(Triggers.resolveTrick, response);
+            return;
+        }
+
+        const response = Game.handleTrickResolution(socket, Client.clients, data);
+        if ("error" in response) {
+            socket.emit(Triggers.resolveTrick, response);
+            return;
+        }
+
+        if ("game" in response) {
+            io.to(response.game.details.code).emit(Triggers.refreshGame, {game : response.game});
+        }
+    });
 });
+
+
+// // Set timer for 5 seconds
+// const timerId = setTimeout(function() {
+//     console.log('Timer is up!');
+//   }, 5000); // time is in milliseconds
+  
+//   // Cancel timer
+//   clearTimeout(timerId);

@@ -13,7 +13,7 @@ import { User } from '../../../models/user';
 })
 export class HandleComponent implements OnInit, OnDestroy {
   constructor(
-    private lobbyService: LobbyService,
+    public lobbyService: LobbyService,
     ) {
       this.setColor();
     }

@@ -12,5 +12,6 @@ module.exports = {
         refreshHand: "refresh-hand",
         placeBet: "place-bet",
         playCard: "play-card",
+        resolveTrick: "resolve-trick",
     }
 }

@@ -1,0 +1,27 @@
+<img (click)="toggleTigressModal()" cImg fluid rounded cCardImg="top" src="./assets/img/deck/{{this.card.id}}.png">
+
+<c-modal id="TigressModal" [visible]="visible" (visibleChange)="toggleTigressModalChange($event)">
+  <c-modal-header>
+    <h5 cModalTitle>Select Tigress Type</h5>
+    <button (click)="toggleTigressModal()" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <c-row>
+      <c-col>
+        <c-card class="mb-4">
+          <c-card-header><b>Play as Wildcard</b></c-card-header>
+          <img cImg fluid rounded (click)="playTigress(false)" cCardImg="top" src="./assets/img/deck/66.png">
+        </c-card>
+        <c-card class="mb-4">
+          <c-card-header><b>Play as Pirate</b></c-card-header>
+          <img cImg fluid rounded (click)="playTigress(true)" cCardImg="top" src="./assets/img/deck/{{this.card.id}}.png">
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-modal-body>
+  <c-modal-footer>
+    <button (click)="toggleTigressModal()" cButton color="secondary">
+      Close
+    </button>
+  </c-modal-footer>
+</c-modal>

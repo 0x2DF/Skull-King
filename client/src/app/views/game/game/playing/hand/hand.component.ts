@@ -29,13 +29,13 @@ export class PlayingHandComponent implements OnInit {
   subscriptions = {
     "hand": false,
   }
+
   TIGRESS_ID = 7;
+  tigressAsPirate = false;
 
   subscribeHand(): void {
-    console.log("PlayingHandComponent subscribeHand()");
     if (!this.subscriptions["hand"]) {
       this.handSubscription = this.gameService.sharedHand.subscribe(hand => {
-        console.log("PlayingHandComponent gameService.sharedGame.subscribe");
         this.hand = <Card[]>hand;
       });
       this.subscriptions["hand"] = true;
@@ -43,10 +43,15 @@ export class PlayingHandComponent implements OnInit {
   }
 
   playCard(card: Card){
-    if (card.id == this.TIGRESS_ID){
-      let tigress_switch = document.getElementById(`${card.id}_switch`) as HTMLInputElement;
-      card.type = (tigress_switch.checked == true ? 'Pirate' : 'Wildcard');
-    }
     this.gameService.playCard(card);
+  }
+
+  playTigress(card: Card) {
+    console.log(card);
+    this.playCard(card);
+  }
+
+  isTigressCard(card: Card): boolean {
+    return (card.id == this.TIGRESS_ID);
   }
 }

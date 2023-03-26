@@ -10,19 +10,15 @@ import { Error } from '../../../models/error'
 export class ToastComponent implements OnInit {
   constructor(
     ) {
-      // this.error = {name:""};
-      console.log(this.service);
+      this.error = Error();
   }
 
-  ngOnInit(): void { 
-    console.log("ToastComponent ngOnInit()");
+  ngOnInit(): void {
     this.subscribeError();
   }
 
   ngOnDestroy() {
-    console.log("Toast component ngOnDestroy()")
     this.errorSubscription.unsubscribe();
-    console.log("ToastComponent ngOnDestroy() lobbySubscription.unsubscribe")
   }
 
   @Input() service: any;
@@ -41,14 +37,14 @@ export class ToastComponent implements OnInit {
     if (!this.subscriptions["error"]) {
       this.errorSubscription = this.service.sharedError.subscribe(
         (error: Error) => {
-          console.log("ToastComponent subscribeError() lobbyService.sharedError.subscribe");
+          let prev_error = this.error;
           this.error = <Error>error;
-          this.toggleToast();
+          // Toggle toast when there is a new error.
+          if (prev_error.name !== this.error.name) { this.toggleToast(); }
         }
       );
       this.subscriptions["error"] = true;
     }
-    console.log(this.errorSubscription);
   }
 
   toggleToast() {

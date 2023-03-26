@@ -12,7 +12,13 @@ var LOBBY = (function() {
     var _ERR_MSG_LOBBY_FULL = `Lobby {} is full.`;
     var _ERR_MSG_LOBBY_IN_PROGRESS = `Lobby {} is already in progress.`;
     var _ERR_MSG_LOBBY_HANDLE_TAKEN = `{} is already part of {}.`;
-    var _ERR_MSG_USER_LOBBY_QTY_EXCEEDED = `{} has exceeded the maximum amount of lobbies`;
+    var _ERR_MSG_USER_LOBBY_QTY_EXCEEDED = `Maximum amount of lobbies exceeded.`;
+    var _ERR_MSG_LOBBY_MULTIPLE_INSTANCES = `You can only join this lobby once.`;
+    var _ERR_MSG_NON_EXISTENT_CLIENT = `Client does not exist.`;
+    var _ERR_MSG_CLIENT_NOT_IN_LOBBY = `You are not part of {}.`;
+    var _ERR_MSG_CLIENT_NOT_LOBBY_ADMIN = `You are not admin of {}.`;
+    var _ERR_MSG_INCORRECT_LOBBY_STATE = `Lobby is not in the correct state.`;
+    var _ERR_MSG_LOBBY_MISSING_CLIENTS = `There are not enough players to start.`;
 
     let lobbies = {};
 
@@ -25,9 +31,7 @@ var LOBBY = (function() {
         if (lobby_code in lobbies) {
             return { lobby: _censorLobby(lobbies[lobby_code], clients) };
         } else {
-            let msg = _ERR_MSG_LOBBY_NOT_FOUND.format(lobby_code);
-            console.log(msg);
-            return { error: { name: "LobbyNotFound" } };
+            return { error: { name: "LobbyNotFound", description: _ERR_MSG_LOBBY_NOT_FOUND.format(lobby_code) } };
         }
     }
 
@@ -35,8 +39,7 @@ var LOBBY = (function() {
     function createLobby(socket, clients) {
         const id = socket.id;
         if (id in clients) {
-            console.log(_ERR_MSG_USER_LOBBY_QTY_EXCEEDED.format(id));
-            return {error: { name: "ClientLobbyQtyExceeded" }};
+            return {error: { name: "LobbyQtyExceeded", description: _ERR_MSG_USER_LOBBY_QTY_EXCEEDED }};
         }
 
         const lobby_code = _generateLobbyCode();
@@ -55,35 +58,28 @@ var LOBBY = (function() {
 
         // Check if lobby exists.
         if (!(lobby_code in lobbies)){
-            let msg = _ERR_MSG_LOBBY_NOT_FOUND.format(lobby_code)
-            console.log(msg);
-            return { error: { name: "LobbyNotFound" } };
+            return { error: { name: "LobbyNotFound", description: _ERR_MSG_LOBBY_NOT_FOUND.format(lobby_code) } };
         }
 
         // Check if lobby has open spots.
         if (lobbies[lobby_code].clients.length >= _LOBBY_MAX_USERS){
-            let msg = _ERR_MSG_LOBBY_FULL.format(lobby_code)
-            console.log(msg);
-            return { error: { name: "LobbyFull" } };
+            return { error: { name: "LobbyFull", description: _ERR_MSG_LOBBY_FULL.format(lobby_code) } };
         }
 
         // Check if handle is taken
         if (_censorLobby(lobbies[lobby_code], clients).clients.includes(client_handle)){
-            console.log(_ERR_MSG_LOBBY_HANDLE_TAKEN.format(client_handle, lobby_code));
-            return { error: { name: "LobbyHandleTaken" } };
+            return { error: { name: "LobbyHandleTaken", description: _ERR_MSG_LOBBY_HANDLE_TAKEN.format(client_handle, lobby_code) } };
         }
 
         // Check whether the lobby has already begun.
         if (lobbies[lobby_code].state == States.inProgress){
-            let msg = _ERR_MSG_LOBBY_IN_PROGRESS.format(lobby_code);
-            console.log(msg);
-            return { error: { name: "LobbyInProgress" } };
+            return { error: { name: "LobbyInProgress", description: _ERR_MSG_LOBBY_IN_PROGRESS.format(lobby_code) } };
         }
 
         // Modify users
         if (id in clients) {
             if (clients[id].handle != null) {
-                return { error: { name: "DuplicateJoinLobby" } };
+                return { error: { name: "LobbyMultipleInstances", description: _ERR_MSG_LOBBY_MULTIPLE_INSTANCES } };
             }
             clients[id].handle = client_handle;
         } else {
@@ -92,7 +88,6 @@ var LOBBY = (function() {
 
         // Add user to lobby
         lobbies[lobby_code].clients.push(id);
-        // console.log('{} joined {}'.format(id, lobby_code));
 
         // Set lobby admin
         if (lobbies[lobby_code].admin == null){
@@ -109,41 +104,36 @@ var LOBBY = (function() {
 
         // Client must exist
         if (!(id in clients)) {
-            console.log(`Client does not exist`);
-            return { error: { name: "ClientDoesNotExist" } };
+            return { error: { name: "ClientDoesNotExist", description: _ERR_MSG_NON_EXISTENT_CLIENT } };
         }
         let client = clients[id];
         const lobby_code = client.lobby_code;
 
         // Lobby must exist
         if (!(lobby_code in lobbies)) {
-            console.log(`Lobby ${lobby_code} does not exist`);
-            return { error: { name: "LobbyNotFound" } };
+            return { error: { name: "LobbyNotFound", description: _ERR_MSG_LOBBY_NOT_FOUND.format(lobby_code) } };
         }
         let lobby = lobbies[lobby_code];
 
         // Lobby code and Client Lobby code must match
         if (lobby.code != client.lobby_code) {
-            console.log(`${lobby_code} != ${client.lobby_code}`);
-            return { error: { name: "LobbyMismatch" } };
+            return { error: { name: "ClientNotInLobby", description: _ERR_MSG_CLIENT_NOT_IN_LOBBY.format(lobby.code) } };
         }
 
         // Client must be lobby admin
         if (lobby.admin != id) {
-            console.log(`${id} is not ${lobby_code}'s admin`);
-            return { error: { name: "ClientNotAdmin" } };
+            return { error: { name: "ClientNotAdmin", description: _ERR_MSG_CLIENT_NOT_LOBBY_ADMIN.format(lobby_code) } };
         }
 
         // Lobby state must be waiting
         if (lobby.state != States.waiting) {
             console.log(`${lobby.state} != ${States.waiting}`);
-            return { error: { name: "IncorrectLobbyState" } };
+            return { error: { name: "IncorrectLobbyState", description: _ERR_MSG_INCORRECT_LOBBY_STATE } };
         }
 
         // Lobby must have at least 2 clients
         if (lobby.clients.length < 2) {
-            console.log(`${lobby.clients.length} < 2`);
-            return { error: { name: "TooFewClientsToStart" } };
+            return { error: { name: "TooFewClientsToStart", description: _ERR_MSG_LOBBY_MISSING_CLIENTS } };
         }
 
         lobbies[lobby_code].state = States.inProgress;

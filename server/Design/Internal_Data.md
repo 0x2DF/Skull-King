@@ -65,6 +65,7 @@ Round[Game.round] = {
     lead: player_handle,
     tricks: []Trick,
     [*] bets: {}Bets
+    deck: []integer,
 }
 
 Trick[Game.trick] = {
