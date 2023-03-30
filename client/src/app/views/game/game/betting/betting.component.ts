@@ -15,13 +15,11 @@ export class BettingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("BettingComponent onInit()");
     this.subscribeGame();
   }
 
   ngOnDestroy(): void {
     this.gameSubscription.unsubscribe();
-    console.log("BettingComponent ngOnDestroy() gameSubscription.unsubscribe()");
   }
 
   @Input() game: Game = Game();
@@ -32,10 +30,8 @@ export class BettingComponent implements OnInit {
   }
 
   subscribeGame(): void {
-    console.log("BettingComponent subscribeGame()");
     if (!this.subscriptions["game"]) {
       this.gameSubscription = this.gameService.sharedGame.subscribe(game => {
-        console.log("BettingComponent gameService.sharedGame.subscribe");
         this.game = <Game>game;
       });
       this.subscriptions["game"] = true;

@@ -76,5 +76,4 @@ export class TitleComponent implements OnInit, OnDestroy {
     let temp_lobby: Lobby = { code: code, clients: [], state: "", admin: "" }
     this.lobbyService.findLobby(temp_lobby);
   }
-
 }

@@ -14,14 +14,12 @@ export class BettingHandComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("BettingHandComponent onInit()");
     this.subscribeHand();
     this.gameService.refreshHand();
   }
 
   ngOnDestroy(): void {
     this.handSubscription.unsubscribe();
-    console.log("BettingHandComponent ngOnDestroy() handSubscription.unsubscribe()");
   }
 
   hand = <Card[]>([]);
@@ -31,10 +29,8 @@ export class BettingHandComponent implements OnInit {
   }
 
   subscribeHand(): void {
-    console.log("BettingHandComponent subscribeHand()");
     if (!this.subscriptions["hand"]) {
       this.handSubscription = this.gameService.sharedHand.subscribe(hand => {
-        console.log("BettingHandComponent gameService.sharedGame.subscribe");
         this.hand = <Card[]>hand;
       });
       this.subscriptions["hand"] = true;

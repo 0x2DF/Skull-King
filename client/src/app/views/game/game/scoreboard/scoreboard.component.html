@@ -1,1 +1,68 @@
-<p>scoreboard works!</p>
+<c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header>
+          <b>Scoreboard</b>
+        </c-card-header>
+        <c-card-body>
+            <c-alert color="success">
+                <h4><strong>{{ game.players[0] }}</strong> tops the leaderboard! Free beer to you mate!</h4>
+            </c-alert>
+            <c-row>
+                <c-col xs="12">
+                    <c-card class="mb-4">
+                        <c-card-header>
+                            <b>Leaderboard</b>
+                        </c-card-header>
+                        <c-card-body>
+                            <table cTable hover>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Player</th>
+                                        <th scope="col">Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let player of game.players; let c = index">
+                                        <th scope="row">{{c}}</th>
+                                        <td>{{player.handle}}</td>
+                                        <td>{{player.score}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </c-card-body>
+                    </c-card>
+                </c-col>
+            </c-row>
+            <c-row>
+                <c-col xs="12">
+                    <c-card class="mb-4">
+                        <c-card-header>
+                            <b>Statistics</b>
+                        </c-card-header>
+                        <c-card-body>
+                            <c-row [gutter]="4" class="mb-3" [md]="3" [xs]="1">
+                                <c-col *ngFor="let stat of stats; index as i;">
+                                  <c-card class="h-100">
+                                    <img cCardImg="top" src="./assets/img/angular.jpg">
+                                    <c-card-body>
+                                      <h5 cCardTitle>{{stat.title}}</h5>
+                                      <p cCardText>
+                                        {{stat.body}}
+                                      </p>
+                                    </c-card-body>
+                                    <c-card-footer>
+                                      <small class="text-medium-emphasis">Last updated {{i+10}} mins ago</small>
+                                    </c-card-footer>
+                                  </c-card>
+                                </c-col>
+                            </c-row>
+                        </c-card-body>
+                    </c-card>
+                </c-col>
+            </c-row>
+        </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

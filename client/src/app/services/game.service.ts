@@ -25,7 +25,7 @@ export class GameService {
   private subscriptions = {
     'refresh-game': false,
     'refresh-hand': false,
-    'resolve-trick': false,
+    'get-resolve-trick': false,
   }
 
   private game = new BehaviorSubject(Game());
@@ -76,17 +76,16 @@ export class GameService {
   }
 
   listenResolveTrick() {
-    if (!this.subscriptions['resolve-trick']) {
-      this.socket.on('resolve-trick', (data: any) => {
-        console.log("listenResolveTrick");
-        console.log(data);
+    if (!this.subscriptions['get-resolve-trick']) {
+      this.socket.on('get-resolve-trick', (data: any) => {
         if (data.error) { this.error.next(data.error); }
         if (data.card) { this.card.next(data.card); }
         if (data.data) { this.data.next(data.data); }
+        if (data.hand) { this.hand.next(data.hand); }
       });
-      this.subscriptions['resolve-trick'] = true;
+      this.subscriptions['get-resolve-trick'] = true;
     }
-    this.socket.emit('resolve-trick', null);
+    this.socket.emit('get-resolve-trick', null);
   }
 
   resolveTrick(data: any)

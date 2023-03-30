@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { GameService } from '../../../../../services/game.service';
 import { Game } from '../../../../../models/game';
+import { Card } from '../../../../../models/card';
 import { Trick } from '../../../../../models/trick';
 
 @Component({
@@ -11,15 +13,39 @@ export class PlayingDetailsComponent implements OnInit {
   game: Game = Game();
   trick: Trick[] = [];
 
-  items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  gameSubscription!: Subscription;
+  subscriptions = {
+    "game": false,
+  }
+  TIGRESS_ID = 7;
+  WILDCARD_ID = 66;
 
   constructor(
     private gameService: GameService
     ) { }
 
   ngOnInit(): void {
-    this.gameService.sharedGame.subscribe(game => {
-      this.game = game;
-    });
+    this.subscribeGame();
+  }
+
+  ngOnDestroy(): void {
+    this.gameSubscription.unsubscribe();
+  }
+
+  subscribeGame(): void {
+    if (!this.subscriptions["game"]) {
+      this.gameSubscription = this.gameService.sharedGame.subscribe(game => {
+        this.game = <Game>game;
+      });
+      this.subscriptions["game"] = true;
+    }
+  }
+
+  isTigressCard(card: Card): boolean {
+    return (card.id == this.TIGRESS_ID);
+  }
+
+  isWildcard(card: Card): boolean {
+    return (card.rank == 0);
   }
 }

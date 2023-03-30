@@ -12,6 +12,7 @@ module.exports = {
         refreshHand: "refresh-hand",
         placeBet: "place-bet",
         playCard: "play-card",
+        getResolveTrick: "get-resolve-trick",
         resolveTrick: "resolve-trick",
     }
 }

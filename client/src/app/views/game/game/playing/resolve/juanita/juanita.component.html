@@ -1,0 +1,25 @@
+<c-row ngPreserveWhitespaces>
+  <c-col>
+    <c-card class="mb-3 text-center">
+      <c-card-header>
+          <b>View remaining cards</b>
+      </c-card-header>
+      <c-card-body class="text-center">
+        <c-row [gutter]="5" class="mb-5" [md]="5" [xs]="3">
+          <c-col *ngFor="let card of data">
+            <c-card class="h-100">
+              <img cImg fluid rounded cCardImg="top" src="./assets/img/deck/{{card.id}}.png">
+            </c-card>
+          </c-col>
+        </c-row>
+        <br/>
+        <c-row>
+          <c-col>
+            <button cButton color="success" (click)="accept()">Accept</button>
+            <button cButton color="danger" (click)="cancel()">Cancel</button>
+          </c-col>
+        </c-row>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { GameService } from '../../../../../services/game.service';
 import { Card } from '../../../../../models/card';
+import { Game } from '../../../../../models/game';
 
 @Component({
   selector: 'game-playing-resolve',
@@ -15,22 +16,30 @@ export class PlayingResolveComponent implements OnInit {
   ngOnInit(): void {
     this.subscribeCard();
     this.subscribeData();
+    this.subscribeHand();
     this.gameService.listenResolveTrick();
+    console.log("this.game");
+    console.log(this.game);
   }
 
   ngOnDestroy() {
     this.cardSubscription.unsubscribe();
     this.dataSubscription.unsubscribe();
+    this.handSubscription.unsubscribe();
   }
 
+  @Input() game: Game = Game();
   public card: Card = Card();
   data: any = {};
+  hand = <Card[]>([]);
 
+  handSubscription!: Subscription;
   cardSubscription!: Subscription;
   dataSubscription!: Subscription;
   subscriptions = {
     "card": false,
     "data": false,
+    "hand": false,
   }
 
   public visible = true;
@@ -44,17 +53,38 @@ export class PlayingResolveComponent implements OnInit {
     }
   }
 
+  subscribeHand(): void {
+    if (!this.subscriptions["hand"]) {
+      this.handSubscription = this.gameService.sharedHand.subscribe(hand => {
+        this.hand = <Card[]>hand;
+      });
+      this.subscriptions["hand"] = true;
+    }
+  }
+
   subscribeData(): void {
     if (!this.subscriptions["data"]) {
-      this.dataSubscription = this.gameService.sharedGame.subscribe(data => {
+      this.dataSubscription = this.gameService.sharedData.subscribe(data => {
         this.data = <any>data;
+        console.log("this.data");
+        console.log(this.data);
       });
       this.subscriptions["data"] = true;
     }
   }
 
   handleResolveModalChange(event: any) {
+    console.log("handleResolveModalChange()");
     this.visible = event;
-    this.gameService.resolveTrick(null);
+    if (this.visible == false) {
+      this.gameService.resolveTrick(null);
+    }
+  }
+
+  getCardComponent(card: Card) : any{
+    return card.id == 2 ? "bendtCard" : 
+            (card.id == 3 ? "harryCard" :
+              (card.id == 4 ? "juanitaCard" :
+                (card.id == 5 ? "rascalCard" : "rosieCard")));
   }
 }

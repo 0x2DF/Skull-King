@@ -12,13 +12,11 @@ export class PlayingPlayersComponent implements OnInit {
   constructor(private gameService: GameService) { }
 
   ngOnInit(): void {
-    console.log("PlayingPlayersComponent onInit()");
     this.subscribeGame();
   }
 
   ngOnDestroy(): void {
     this.gameSubscription.unsubscribe();
-    console.log("PlayingPlayersComponent ngOnDestroy() handSubscription.unsubscribe()");
   }
 
   game: Game = Game();
@@ -30,10 +28,8 @@ export class PlayingPlayersComponent implements OnInit {
   }
 
   subscribeGame(): void {
-    console.log("PlayingPlayersComponent subscribeGame()");
     if (!this.subscriptions["game"]) {
       this.gameSubscription = this.gameService.sharedGame.subscribe(game => {
-        console.log("PlayingPlayersComponent gameService.sharedGame.subscribe");
         this.game = <Game>game;
         this.refreshPlayers();
       });

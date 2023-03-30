@@ -18,7 +18,7 @@ import {
   GridModule,
   ModalModule,
   NavModule,
-  OffcanvasModule ,
+  OffcanvasModule,
   ProgressModule,
   SharedModule,
   TableModule,
@@ -38,11 +38,17 @@ import { BettingComponent } from './game/betting/betting.component';
 import { BettingHandComponent } from './game/betting/hand/hand.component';
 import { PlayingComponent } from './game/playing/playing.component';
 import { PlayingDetailsComponent } from './game/playing/details/details.component';
+import { PlayingDetailsTricksComponent } from './game/playing/details/tricks/tricks.component';
 import { PlayingHandComponent } from './game/playing/hand/hand.component';
 import { PlayingHandTigressComponent } from './game/playing/hand/tigress/tigress.component';
 import { PlayingHelpComponent } from './game/playing/help/help.component';
 import { PlayingPlayersComponent } from './game/playing/players/players.component';
 import { PlayingResolveComponent } from './game/playing/resolve/resolve.component';
+import { PlayingResolveBendtComponent } from './game/playing/resolve/bendt/bendt.component';
+import { PlayingResolveHarryComponent } from './game/playing/resolve/harry/harry.component';
+import { PlayingResolveJuanitaComponent } from './game/playing/resolve/juanita/juanita.component';
+import { PlayingResolveRascalComponent } from './game/playing/resolve/rascal/rascal.component';
+import { PlayingResolveRosieComponent } from './game/playing/resolve/rosie/rosie.component';
 import { ScoreBoardComponent } from './game/scoreboard/scoreboard.component';
 import { HandleComponent } from './handle/handle.component';
 import { LobbyComponent } from './lobby/lobby.component';
@@ -97,11 +103,17 @@ import { WidgetsModule } from '../widgets/widgets.module';
     MessagesComponent,
     PlayingComponent,
     PlayingDetailsComponent,
+    PlayingDetailsTricksComponent,
     PlayingHandComponent,
     PlayingHandTigressComponent,
     PlayingHelpComponent,
     PlayingPlayersComponent,
     PlayingResolveComponent,
+    PlayingResolveBendtComponent,
+    PlayingResolveHarryComponent,
+    PlayingResolveJuanitaComponent,
+    PlayingResolveRascalComponent,
+    PlayingResolveRosieComponent,
     RulesComponent,
     ScoreBoardComponent,
     TitleComponent,

@@ -14,14 +14,12 @@ export class PlayingHandComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("PlayingHandComponent onInit()");
     this.subscribeHand();
     this.gameService.refreshHand();
   }
 
   ngOnDestroy(): void {
     this.handSubscription.unsubscribe();
-    console.log("PlayingHandComponent ngOnDestroy() handSubscription.unsubscribe()");
   }
 
   hand = <Card[]>([]);

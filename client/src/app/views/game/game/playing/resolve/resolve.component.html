@@ -3,20 +3,40 @@
     <h5 cModalTitle>Resolve Trick</h5>
     <button [cModalToggle]="resolveModal.id" cButtonClose></button>
   </c-modal-header>
-  <c-modal-body>
-    <img cCardImg="top" *ngIf="card != null" src="./assets/img/deck/{{this.card.id}}.png" style="width: 113px; height: 150px;">
-    <br>
-    <ng-container *ngTemplateOutlet="content"></ng-container>
+  <c-modal-body class="text-center">
+    <img cCardImg="top" *ngIf="this.card != null" src="./assets/img/deck/{{this.card.id}}.png" style="width: 113px; height: 150px;">
+    <br/><br/>
+    <ng-container *ngTemplateOutlet="card.id == 2 ? bendtCard : 
+    (card.id == 3 ? harryCard : 
+    (card.id == 4 ? juanitaCard :
+    (card.id == 5 ? rascalCard : rosieCard)))"></ng-container>
   </c-modal-body>
 </c-modal>
 
+<ng-template #bendtCard>
+  <!-- <ng-container *ngIf= "card.id == 2 else harryCard"> -->
+    <game-playing-resolve-bendt [hand]="hand"></game-playing-resolve-bendt>
+  <!-- </ng-container> -->
+</ng-template>
 
-<ng-template #content>
-  <p>
-  + Select who leads next
-  + Select two cards to discard
-  + `view deck`
-  + +/- [0, 10, 20]
-  + bid +/- [1]
-  </p>
+<ng-template #harryCard>
+  <!-- <ng-container *ngIf= "card.id == 3 else juanitaCard"> -->
+    <game-playing-resolve-harry></game-playing-resolve-harry>
+  <!-- </ng-container> -->
+</ng-template>
+
+<ng-template #juanitaCard>
+  <!-- <ng-container *ngIf= "card.id == 4 else rascalCard"> -->
+    <game-playing-resolve-juanita [data]="data"></game-playing-resolve-juanita>
+  <!-- </ng-container> -->
+</ng-template>
+
+<ng-template #rascalCard>
+  <!-- <ng-container *ngIf= "card.id == 5 else rosieCard"> -->
+    <game-playing-resolve-rascal></game-playing-resolve-rascal>
+  <!-- </ng-container> -->
+</ng-template>
+
+<ng-template #rosieCard>
+  <game-playing-resolve-rosie [game]="game"></game-playing-resolve-rosie>
 </ng-template>

@@ -2,11 +2,19 @@ var DECK = (function() {
     const Decks = {
         Legacy : {
             "1" : { id: 1, name: 'Skull King', rank: 3, value: 0, type: 'Skull King' },
+            // Add 2 cards to your hand from the deck, then discard 2 cards.
             "2" : { id: 2, name: 'Bendt the Bandit', rank: 3, value: 0, type: 'Pirate' },
+            // Chose to change your bid by plus or minus 1, or leave it the same.
             "3" : { id: 3, name: 'Harry the Giant', rank: 3, value: 0, type: 'Pirate' },
+            // Privately look through any cards not dealth that round to see which are not
+            // in play.
             "4" : { id: 4, name: 'Juanita Jade', rank: 3, value: 0, type: 'Pirate' },
+            // Bet 0, 10, or 20 points. Earn the points if you bid correct, lose them if
+            // you fail!
             "5" : { id: 5, name: 'Rascal of Rotan', rank: 3, value: 0, type: 'Pirate' },
+            // Choose any player, including yourself, to lead the next trick.
             "6" : { id: 6, name: 'Rosie de Laney', rank: 3, value: 0, type: 'Pirate' },
+            // Can be played as pirate or wildcard.
             "7" : { id: 7, name: 'Tigress', rank: 3, value: 0, type: 'Pirate' },
             "8" : { id: 8, name: 'Alyra', rank: 3, value: 0, type: 'Mermaid' },
             "9" : { id: 9, name: 'Sirena', rank: 3, value: 0, type: 'Mermaid' },

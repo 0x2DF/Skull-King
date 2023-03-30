@@ -1,48 +1,57 @@
-errors:
-+ tigress
-+ Green 3 -> Whale
-    - whale player won
-+ What happens if requests are spammed ?
-+ Leading player disconnects
-
-trick resolution
-scoreboard
-
-
 # Tasks
+## README
++ Re-write
+
+## TESTING
++ MISSING
+
+## ERRORS
++ White whale
++ Refactor handle pirate cards
++ Verify points
++ Kraken shows player who played the card as winning, message is "null wins the trick"
++ What happens if requests are spammed ?
++ Incorrect lobby redirect 
+        1) Enter wrong lobby code 
+        2) 'enter lobby'
+        3) Enter valid lobby code
+        4) 'enter lobby'
+        5) 404 redirect
++ If leading player disconnects, no one can play
+
 ## Server:
 + Scoring
     - Bonus points
 + Trick resolution handling
     - Pirates
-+ White whale
 + Errors/Messages
 + Game settings
     - Game Modes
-    - Lobby timeout
-    - Betting timeout
+    - Timeout
++ Timeouts
+    - Lobby time to live
+    - Betting
+    - Playing
+    - Trick Resolution
+
+### Nice to have:
 + Disconnect
-    - Announce lobby
-+ Lobby timeout (Time to live)
+    - Announce lobby someone left
 + Join mid game
     - if lobby has a spot, new user can take spot (new score, skips current round)
 
 ## Client:
 + User experience
     - Errors/Messages handling w/toasts
-    - Display list of played tricks in round details as a collapse with details
-+ Betting
-    - Player List (order and who has bet)
-    - Betting timeout
+    - Display list of played tricks in round details as a collapse with details of who played which trick and which trick won the round or is currently winning.
+    - When tigress is played, value is not explicit.
 + Card Effect Handling
 + Remove console logs
-+ Errors:
-    + Incorrect lobby redirect 
-        1) Enter wrong lobby code 
-        2) 'enter lobby'
-        3) Enter valid lobby code
-        4) 'enter lobby'
-        5) 404 redirect
++ Scoreboard
+
+### Nice to have:
++ Betting
+    - Player List (order and who has bet)
 
 # Brainstorming
 ## Card Concepts:

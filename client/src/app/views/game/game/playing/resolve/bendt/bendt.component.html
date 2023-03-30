@@ -1,0 +1,37 @@
+<c-row ngPreserveWhitespaces>
+  <c-col>
+    <c-card class="mb-3 text-center">
+      <c-card-header>
+          <b>Select two cards to discard</b>
+      </c-card-header>
+      <c-card-body class="text-center">
+        <c-row [gutter]="5" class="mb-5" [md]="5" [xs]="3">
+          <c-col *ngFor="let card of hand">
+            <c-card class="h-100">
+              <ng-container [ngTemplateOutlet]="isSelected(card.id) == true ? selected : unselected"
+                      [ngTemplateOutletContext]="{ data: card }">
+              </ng-container>
+            </c-card>
+          </c-col>
+        </c-row>
+        <br/>
+        <c-row>
+          <c-col>
+            <button cButton color="success" (click)="accept()">Accept</button>
+            <button cButton color="danger" (click)="cancel()">Cancel</button>
+          </c-col>
+        </c-row>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
+
+<ng-template #selected
+            let-card="data">
+    <img cImg fluid rounded style="filter: grayscale(100%)" (click)="toggleSelectCard(card)" cCardImg="top" src="./assets/img/deck/{{card.id}}.png">
+</ng-template>
+
+<ng-template #unselected
+            let-card="data">
+            <img cImg fluid rounded (click)="toggleSelectCard(card)" cCardImg="top" src="./assets/img/deck/{{card.id}}.png">
+</ng-template>

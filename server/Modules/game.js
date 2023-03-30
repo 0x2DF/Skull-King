@@ -43,6 +43,7 @@ var GAME = (function() {
     const _ERR_GAME_INVALID_CARD = "GameInvalidCard";
     const _ERR_GAME_INVALID_CODE = "GameInvalidCode";
     const _ERR_GAME_NOT_PLAYERS_TURN = "GameNotPlayersTurn";
+    const _ERR_GAME_NOT_PLAYERS_TURN_RESOLVE = "GameNotPlayersTurnResolve";
     const _ERR_GAME_PLAYER_MISSING_CARD = "GamePlayerMissingCard";
     const _ERR_GAME_PLAYER_NOT_FOUND = "GamePlayerNotFound";
     const _ERR_GAME_UNKNOWN_CARD_TYPE = "GameUnknownCardType";
@@ -50,9 +51,10 @@ var GAME = (function() {
     const _ERR_MSG_GAME_BET_OUT_OF_BOUNDS = "Bet value must be between 0 and Round #.";
     const _ERR_MSG_GAME_CLIENT_DOES_NOT_EXIST = "Client does not exist.";
     const _ERR_MSG_GAME_INCORRECT_STATE = "Game is not in the appropiate state.";
-    const _ERR_MSG_GAME_INVALID_CARD = "You are attempting to play an invalid card.";
+    const _ERR_MSG_GAME_INVALID_CARD = "You are attempting to use an invalid card.";
     const _ERR_MSG_GAME_INVALID_CODE = "Game does not exist.";
     const _ERR_MSG_GAME_NOT_PLAYERS_TURN = "You can only play during your turn.";
+    const _ERR_MSG_GAME_NOT_PLAYERS_TURN_RESOLVE = "Only the winner of the trick can resolve.";
     const _ERR_MSG_GAME_PLAYER_MISSING_CARD = "You do not possess the card you are attempting to play.";
     const _ERR_MSG_GAME_PLAYER_NOT_FOUND = "Player is not part of game.";
     const _ERR_MSG_GAME_UNKNOWN_CARD_TYPE = "Attempting to handle the effect of an unknown card.";
@@ -64,6 +66,11 @@ var GAME = (function() {
     const _CARD_NAME_JOLLY_RANGER = "Jolly Ranger";
 
     const _STR_ERROR = "error"
+    const _STR_GAME = "game"
+    const _STR_ID = "id"
+    const _STR_BID = "bid"
+    const _STR_PID = "pid"
+    const _STR_CARDS = "cards"
 
     let games = {};
 
@@ -110,7 +117,7 @@ var GAME = (function() {
         response = _playCard(code, player_index, card);
         if (_STR_ERROR in response) return response;
 
-        let hand_response = _getPlayerHand(code, player_index)
+        let hand_response = _getPlayerHand(code, player_index);
 
         return {
             game    : _redactGame(games[code]),
@@ -119,15 +126,42 @@ var GAME = (function() {
         };
     }
 
+    // Obtains trick resolution data.
     function getTrickResolutionData(socket, clients) {
         let response = _validateGame(socket, clients, States.trickResolution);
         if (_STR_ERROR in response) return response;
 
-        return _getTrickResolution(response.game_code, response.player_index);
+        const code = response.game_code;
+        const player_index  = response.player_index;
+
+        let data = _getTrickResolution(code, player_index);
+        if (_STR_ERROR in data || _STR_GAME in data) return data;
+
+        let hand_response = _getPlayerHand(code, player_index);
+
+        return {
+            hand: hand_response.hand,
+            card: data.card,
+            data: data.data,
+        }
     }
 
-    function handleTrickResolution(socket, data, clients) {
-        return {};
+    // Handles trick resolution.
+    function handleTrickResolution(socket, clients, data) {
+        let response = _validateGame(socket, clients, States.trickResolution);
+        if (_STR_ERROR in response) return response;
+
+        const code = response.game_code;
+        const player_index  = response.player_index;
+        response = _handleTrickResolution(code, player_index, data);
+        if (_STR_ERROR in response) return response;
+
+        let hand_response = _getPlayerHand(code, player_index);
+
+        return {
+            hand: hand_response.hand,
+            game: _redactGame(games[code]),
+        }
     }
 
     // Removes a client from its associated lobby.
@@ -295,7 +329,8 @@ var GAME = (function() {
             for (const player_index in games[code].players) {
                 // Deal random card.
                 let card_index = Math.floor(Math.random() * cards.length);
-                const card = Deck.getCard(cards[card_index]);
+                // const card = Deck.getCard(cards[card_index]);
+                const card = Deck.getCard(cards.splice(card_index, 1));
                 let new_card = {
                     id: card.id,
                     name: card.name,
@@ -305,7 +340,7 @@ var GAME = (function() {
                 }
                 games[code].players[player_index].hand.push(new_card);
                 // Remove card from deck.
-                cards.splice(card_index, 1);
+                // cards.splice(card_index, 1);
             }
             round--;
         }
@@ -481,20 +516,20 @@ var GAME = (function() {
 
         const winning_card = games[code].details.winning.card;
 
-        // Handle event card rules
+        // Handle event card rules.
         if (games[code].details.event != null) {
             _updateWinningCardOnEventRules(code, winning_card, player_index, card);
             return;
         }
 
-        // Higher ranked card is played
+        // Higher ranked card is played.
         if (card.rank > winning_card.rank) {
             _setWinning(code, player_index, card);
             _setLeading(code, false);
             return;
         }
 
-        // Same ranked card is played
+        // Same ranked card is played.
         if (card.rank == winning_card.rank) {
             _updateWinningCardOnSameRank(code, winning_card, player_index, card)
         }
@@ -546,17 +581,6 @@ var GAME = (function() {
         return;
     }
 
-    // Remove card from players hand.
-    function _removeCardFromHand(code, player_index, card_index) {
-        games[code].players[player_index].hand.splice(card_index, 1);
-    }
-
-    // Trick concludes when every player has played a card.
-    function _hasEveryonePlayed(code, trick, round) {
-        return games[code].rounds[round].tricks[trick].to_play == 
-        games[code].rounds[round].tricks[trick].lead;
-    }
-    
     // Updates the trick winner and prepares the next trick/round.
     function _resolveTrick(code, trick, round) {
         games[code].details.state = States.trickResolution;
@@ -748,27 +772,19 @@ var GAME = (function() {
         switch (true_card.name) {
             case 'Skull King':
                 break;
-            // Add 2 cards to your hand from the deck, then discard 2 cards.
             case 'Bendt the Bandit':
                 break;
-            // Chose to change your bid by plus or minus 1, or leave it the same.
             case 'Harry the Giant':
                 break;
-            // Privately look through any cards not dealth that round to see which are not
-            // in play.
             case 'Juanita Jade':
                 break;
-            // Bet 0, 10, or 20 points. Earn the points if you bid correct, lose them if
-            // you fail!
             case 'Rascal of Rotan':
                 break;
-            // Choose any player, including yourself, to lead the next trick.
             case 'Rosie de Laney':
                 break;
-            // Tigress can be played as pirate or escape
             case 'Tigress':
-                if (card.type == 'Escape') {
-                    true_card.type = 'Escape';
+                if (card.type == 'Wildcard') {
+                    true_card.type = 'Wildcard';
                     true_card.rank = 0;
                 }
                 break;
@@ -804,9 +820,10 @@ var GAME = (function() {
                 break;
             case 'White Whale':
                 _setEvent(code, player_index, card);
-                let highest_value_card = _getHighestValueCardFromTrick(code);
-                if (highest_value_card != null) {
-                    _setWinning(code, player_index, highest_value_card);
+                let highest_value_player_card = _getHighestValueCardFromTrick(code);
+                if (highest_value_player_card != null) {
+                    let player_card_index = _getPlayerIndexByHandle(highest_value_player_card.player, code);
+                    _setWinning(code, player_card_index, highest_value_player_card.card);
                 } else {
                     _setWinning(code, player_index, card);
                 }
@@ -826,16 +843,19 @@ var GAME = (function() {
     // Updates the players score for the round.
     function _getTrickResolution(code, player_index) {
         if (_IsCardResolutionRequired(code) == false) {
-            return {};
+            // Trick no longer needs to be resolved.
+            _prepareNextTrick(code);
+            return { game : _redactGame(games[code]) };
         }
         const player = games[code].players[player_index];
         const round = games[code].details.round;
         const trick = games[code].details.trick;
         const winning_card = games[code].rounds[round].tricks[trick].winner;
         if (player.handle != winning_card.player) {
-            return {};
+            return { error: { name: _ERR_GAME_NOT_PLAYERS_TURN_RESOLVE, description: _ERR_MSG_GAME_NOT_PLAYERS_TURN_RESOLVE } };
         }
-        return { card : winning_card.card };
+
+        return { card : winning_card.card, data : _getPirateData(code, winning_card.card, player_index) };
     }
 
     // Checks if winning card needs resolution stage.
@@ -845,6 +865,118 @@ var GAME = (function() {
 
         let winner_card = games[code].rounds[round].tricks[trick].winner.card;
         return (_isPirate(winner_card) && ['Tigress'].includes(winner_card.name) == false);
+    }
+
+    // Prepares pirate resolution data.
+    function _getPirateData(code, winning_card, player_index) {
+        switch(winning_card.name) {
+            // Privately look through any cards not dealt that
+            // round to see which are not in play.
+            case 'Juanita Jade':
+                return _getDeck(code);
+            // Add 2 cards to your hand from the deck, then discard 2 cards.
+            case 'Bendt the Bandit':
+                const player = games[code].players[player_index];
+                player.hand.push(_removeRandomCardFromDeck(code));
+                player.hand.push(_removeRandomCardFromDeck(code));
+            case 'Harry the Giant':
+            case 'Rascal of Rotan':
+            case 'Rosie de Laney':
+                return {};
+        }
+        return {};
+    }
+
+    // Handles trick resolution.
+    function _handleTrickResolution(code, player_index, data) {
+        if (_IsCardResolutionRequired(code) == false) {
+            // Trick no longer needs to be resolved.
+            _prepareNextTrick(code);
+            return {};
+        }
+
+        const player = games[code].players[player_index];
+        const round = games[code].details.round;
+        const trick = games[code].details.trick;
+        const winning_card = games[code].rounds[round].tricks[trick].winner;
+        if (player.handle != winning_card.player) {
+            return { error: { name: _ERR_GAME_NOT_PLAYERS_TURN_RESOLVE, description: _ERR_MSG_GAME_NOT_PLAYERS_TURN_RESOLVE } };
+        }
+        
+        _prepareNextTrick(code);
+        _handlePirateData(code, winning_card.card, player_index, data);
+        return {};
+    }
+
+    // Handles pirate resolution data.
+    function _handlePirateData(code, winning_card, player_index, data) {
+        switch(winning_card.name) {
+            // Add 2 cards to your hand from the deck, then discard 2 cards.
+            case 'Bendt the Bandit':
+                // No data : default remove last 2 cards.
+                if (data.data == null) {
+                    let card_index = games[code].players[player_index].hand.length - 1;
+                    _removeCardFromHand(code, player_index, card_index);
+                    _removeCardFromHand(code, player_index, card_index - 1);
+                    break;
+                }
+
+                if (_STR_CARDS in data.data &&
+                    data.data.cards instanceof Array &&
+                    data.data.cards.length == 2) {
+                    
+                    for (const card in data.data.cards) {
+                        let true_card = {};
+                        if (_STR_ID in data.data.cards[card]) {
+                            true_card = Deck.getCard(data.data.cards[card].id);
+                        }
+                        if (!(_STR_ID in true_card)) {
+                            let card_index = games[code].players[player_index].hand.length - 1;
+                            _removeCardFromHand(code, player_index, card_index);
+                            break;
+                        }
+                        let card_index = _getCardIndexFromHand(code, player_index, true_card);
+                        _removeCardFromHand(code, player_index, card_index);
+                    }
+                } else {
+                    // No data : default remove last 2 cards.
+                    let card_index = games[code].players[player_index].hand.length - 1;
+                    _removeCardFromHand(code, player_index, card_index);
+                    _removeCardFromHand(code, player_index, card_index - 1);
+                }
+                break;
+            // Chose to change your bid by plus or minus 1, or leave it the same.
+            case 'Harry the Giant':
+                if (data.data == null) {
+                    break;
+                } else if (_STR_BID in data.data &&
+                    (data.data.bid == -1 || data.data.bid == 1)) {
+                    games[code].players[player_index].bet += data.data.bid;
+                }
+                break;
+            // Bet 0, 10, or 20 points. Earn the points if you bid correct, lose them if
+            // you fail!
+            case 'Rascal of Rotan':
+                // TODO
+                break;
+            // Choose any player, including yourself, to lead the next trick.
+            case 'Rosie de Laney':
+                if (data.data == null) {
+                    break;
+                } else if (_STR_PID in data.data &&
+                    (data.data.pid >= 0 && data.data.pid <= games[code].players.length - 1)) {
+                    
+                    const round = games[code].details.round;
+                    const trick = games[code].details.trick;
+                    const player = games[code].players[data.data.pid];
+                    games[code].rounds[round].tricks[trick].lead = player.handle;
+                    games[code].rounds[round].tricks[trick].to_play = player.handle;
+                    break;
+                }
+                break;
+            case 'Juanita Jade':
+                break;
+        }
     }
 
 
@@ -1020,7 +1152,8 @@ var GAME = (function() {
 
     // Returns true if there is a match between the cards name and value.
     function _areMatchingCards(a, b) {
-        return (a.name == b.name) && (a.value == b.value);
+        // return (a.name == b.name) && (a.value == b.value);
+        return (a.id == b.id);
     }
 
     // Returns true if the input card has been played.
@@ -1072,11 +1205,38 @@ var GAME = (function() {
                 highest_value = card.value;
             }
         }
-        if (highest_card_index != -1) return cards[highest_card_index].card;
+        if (highest_card_index != -1) return cards[highest_card_index];
         return null;
 
     }
 
+    // Randomly selects and takes out a card from the deck in play.
+    function _removeRandomCardFromDeck(code) {
+        const round = games[code].details.round;
+        let card_index = Math.floor(Math.random() * games[code].rounds[round].deck.length);
+        return Deck.getCard(games[code].rounds[round].deck.splice(card_index, 1));
+    }
+
+    // Obtains full data of the deck in play.
+    function _getDeck(code) {
+        const round = games[code].details.round;
+        let deck = [];
+        for (let index in games[code].rounds[round].deck) {
+            deck.push(Deck.getCard(games[code].rounds[round].deck[index]));
+        }
+        return deck;
+    }
+
+    // Remove card from players hand.
+    function _removeCardFromHand(code, player_index, card_index) {
+        games[code].players[player_index].hand.splice(card_index, 1);
+    }
+
+    // Check if everyone has played a card.
+    function _hasEveryonePlayed(code, trick, round) {
+        return games[code].rounds[round].tricks[trick].to_play == 
+        games[code].rounds[round].tricks[trick].lead;
+    }
 
     // ---------------- //
     // Input validation //
@@ -1176,6 +1336,7 @@ var GAME = (function() {
         placeBet: placeBet,
         playCard: playCard,
         getTrickResolutionData: getTrickResolutionData,
+        handleTrickResolution: handleTrickResolution,
     };
 
 })();

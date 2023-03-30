@@ -18,7 +18,7 @@
             <game-playing-hand></game-playing-hand>
 
             <ng-container *ngIf= "game.details.state == 'trick-resolution' && getTrickWinner() == user.handle">
-              <game-playing-resolve></game-playing-resolve>
+              <game-playing-resolve [game]="game"></game-playing-resolve>
             </ng-container>
         </c-card-body>
     </c-card>

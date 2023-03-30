@@ -208,17 +208,10 @@ io.on("connection", socket => {
     });
 
     // [->]: resolve-trick {data}
-    // [<-]: resolve-trick {data}
+    // [<=]: refresh-game {game}
+    // [<-]: refresh-hand {hand}
     socket.on(Triggers.resolveTrick, data => {
-        if (data == null) {
-            const response = Game.getTrickResolutionData(socket, Client.clients);
-            if ("error" in response) {
-                return;
-            }
-            socket.emit(Triggers.resolveTrick, response);
-            return;
-        }
-
+        // Handle trick resolution data.
         const response = Game.handleTrickResolution(socket, Client.clients, data);
         if ("error" in response) {
             socket.emit(Triggers.resolveTrick, response);
@@ -228,6 +221,31 @@ io.on("connection", socket => {
         if ("game" in response) {
             io.to(response.game.details.code).emit(Triggers.refreshGame, {game : response.game});
         }
+        if ("hand" in response) {
+            socket.emit(Triggers.refreshHand, {hand : response.hand});
+        }
+    });
+
+    // [->]: get-resolve-trick {_}
+    // [<-]: get-resolve-trick {hand, card, data}
+    // OR
+    // [<=]: refresh-game {game}
+    socket.on(Triggers.getResolveTrick, _ => {
+        const response = Game.getTrickResolutionData(socket, Client.clients);
+        if ("error" in response) {
+            socket.emit(Triggers.resolveTrick, response);
+            return;
+        }
+        // Trick was already resolved, update game.
+        if ("game" in response) {
+            console.log("game in response");
+            io.to(response.game.details.code).emit(Triggers.refreshGame, {game : response.game});
+        } else {
+            // Respond with trick resolution data.
+            console.log(response);
+            socket.emit(Triggers.getResolveTrick, response);
+        }
+        return;
     });
 });
 
