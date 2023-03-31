@@ -12,13 +12,12 @@ node app.js
 #####################
 - Deploy to Heroku -
 
-1. from client: ng build --prod
+1. from client: ng build -c production
 
 2. Copy 'client/dist/client' folder into 'server/public/'
 
 3. Toggle comments for connetion in following files:
 - 'server/app.js'
-- 'client/src/app/socket.service.ts'
 
 4. Execute the following commands from server directory:
 git add .

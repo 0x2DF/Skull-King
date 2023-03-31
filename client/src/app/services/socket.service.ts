@@ -10,7 +10,7 @@ export class SocketService{
   private socket: any;
 
   constructor() {
-    if (!environment.production) {
+    if (environment.production == false) {
       // Local
       this.socket = io(environment.server_url);
     } else {
