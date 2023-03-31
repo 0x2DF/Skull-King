@@ -1,14 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { Observable, of, BehaviorSubject } from 'rxjs';
-import io from "socket.io-client";
+import { BehaviorSubject } from 'rxjs';
 
 import { Card } from '../models/card';
 import { Error } from '../models/error';
 import { Game } from '../models/game';
-import { Trick } from '../models/trick';
-import { User } from '../models/user';
-import { PlayerCard } from '../models/playercard';
 
 import { SocketService } from './socket.service';
 
