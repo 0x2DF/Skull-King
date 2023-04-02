@@ -1,4 +1,3 @@
 .env
-/server/node_modules
-/client/node_modules
-/server/Public
+server/node_modules
+client/node_modules

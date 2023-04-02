@@ -7,37 +7,37 @@ const TRIGGERS = require("./Models/Triggers");
 // Local
 // #######
 
-// const express = require('express');
-// const app = express();
-// let http = require('http').createServer(app);
-// let io = require('socket.io')(http, {
-//     cors: {
-//       origin: "http://localhost:4200",
-//       methods: ["GET", "POST"]
-//     }
-//   });
+const express = require('express');
+const app = express();
+let http = require('http').createServer(app);
+let io = require('socket.io')(http, {
+    cors: {
+      origin: "http://localhost:4200",
+      methods: ["GET", "POST"]
+    }
+  });
 
-// const PORT = 3000;
-// http.listen(PORT, () => {
-//   console.log(`Listening on port ${PORT}`);
-//   console.log(`https://skull-king-app.herokuapp.com:${PORT}`);
-// });
+const PORT = 3000;
+http.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
+  console.log(`https://skull-king-app.herokuapp.com:${PORT}`);
+});
 
 // #######
 // Heroku
 // #######
 
-const PORT = process.env.PORT || 3000;
-const INDEX = '../client/dist/skull-king/index.html';
-const express = require('express');
-const socketIO = require('socket.io');
-const path = require('path');
-const server = express()
-  .use(express.static(__dirname + '../client/dist/skull-king'))
-  .get('/*', function(req,res) {
-    res.sendFile(path.join(__dirname+'../client/dist/skull-king/index.html'));})
-  .listen(PORT, () => console.log(`Listening on ${PORT}`));
-const io = socketIO(server);
+// const PORT = process.env.PORT || 3000;
+// const INDEX = '../client/dist/skull-king/index.html';
+// const express = require('express');
+// const socketIO = require('socket.io');
+// const path = require('path');
+// const server = express()
+//   .use(express.static(__dirname + '../client/dist/skull-king'))
+//   .get('/*', function(req,res) {
+//     res.sendFile(path.join(__dirname+'../client/dist/skull-king/index.html'));})
+//   .listen(PORT, () => console.log(`Listening on ${PORT}`));
+// const io = socketIO(server);
 
 var Client = CLIENT.Client;
 var Game = GAME.Game;
