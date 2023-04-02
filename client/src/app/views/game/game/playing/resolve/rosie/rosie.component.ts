@@ -40,14 +40,13 @@ export class PlayingResolveRosieComponent implements OnInit {
   updateSelectedPlayer(handle: String)
   {
     this.game.players.forEach( (player, i) => {
-      let btn = document.getElementById(`${i}_btn`);
-      if (btn != null) {
-        btn.className = "btn rounded-pill ";
+      let td = document.getElementById(`${i}_player_row`);
+      if (td != null) {
+        td.className = "";
         if (handle == player.handle){
-          btn.className += "btn-warning active";
+          td.className += "table-active";
           this.selected[i] = true;
         } else {
-          btn.className += "btn-light active";
           this.selected[i] = false;
         }
       }

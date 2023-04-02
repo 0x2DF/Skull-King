@@ -5,17 +5,17 @@
           <b>Select who leads the following round</b>
       </c-card-header>
       <c-card-body class="text-center">
-        <div class="row align-items-center">
-          <div class="col-2 col-sm-2 col-md-2 col-xl mb-2 mb-xl-0" *ngFor="let player of game.players; let i = index">
-            <button 
-              id="{{i}}_btn" 
-              cButton color="light" 
-              shape="rounded-pill" 
-              (click)="updateSelectedPlayer(player.handle)">
-              {{player.handle}}
-            </button>
-          </div>
-        </div>
+        <c-row>
+          <c-col>
+            <table cTable>
+              <tbody>
+              <tr *ngFor="let player of game.players; let i = index">
+                <td id="{{i}}_player_row" (click)="updateSelectedPlayer(player.handle)">{{player.handle}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </c-col>
+        </c-row>
         <br/>
         <c-row>
           <c-col>

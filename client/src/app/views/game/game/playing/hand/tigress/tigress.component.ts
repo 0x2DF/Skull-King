@@ -18,7 +18,7 @@ export class PlayingHandTigressComponent implements OnInit {
 
   public visible = false;
 
-  ngOnInit(): void { console.log(this.card); }
+  ngOnInit(): void { }
   ngOnDestroy(): void {}
 
   toggleTigressModal() { this.visible = !this.visible; }

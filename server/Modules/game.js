@@ -34,7 +34,7 @@ var GAME = (function() {
 
     const FIRST_ROUND = 0
     const FIRST_TRICK = 0
-    const ROUND_TOTAL = 10
+    const ROUND_TOTAL = 1
 
     // Error Codes & Messages.
     const _ERR_GAME_BET_OUT_OF_BOUNDS = "GameBetOutsideOfBounds";
@@ -216,7 +216,7 @@ var GAME = (function() {
             scoring_mode : GAME_SCORING_MODES[0],
             card_count_mode : GAME_CARD_COUNTS[0],
             deck_mode : GAME_DECK_MODE[0],
-            total_rounds : 10,
+            total_rounds : ROUND_TOTAL,
             trick_time : 15,
             bet_time : 30,
         };
@@ -640,8 +640,8 @@ var GAME = (function() {
         games[code].details.round += 1;
         games[code].details.trick = 0;
 
-        if (games[code].details.round > games[code].settings.total_rounds){
-            games[code].state = States.scoreboard;
+        if (games[code].details.round >= games[code].settings.total_rounds){
+            games[code].details.state = States.scoreboard;
         }else{
             _resetRound(code);
             
@@ -1272,7 +1272,6 @@ var GAME = (function() {
 
         // If state is provided, the game must be in that state
         if ((state != null) && (games[code].details.state != state)) {
-            console.log(`${games[code].details.state} != ${state}`);
             return { error: { name: _ERR_GAME_INCORRECT_STATE, description: _ERR_MSG_GAME_INCORRECT_STATE } };
         }
 

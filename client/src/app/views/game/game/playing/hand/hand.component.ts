@@ -45,7 +45,6 @@ export class PlayingHandComponent implements OnInit {
   }
 
   playTigress(card: Card) {
-    console.log(card);
     this.playCard(card);
   }
 

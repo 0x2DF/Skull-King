@@ -56,11 +56,8 @@ export class HandleComponent implements OnInit, OnDestroy {
   subscribeLobby(): void {
     if (!this.subscriptions["lobby"]) {
       this.lobbySubscription = this.lobbyService.sharedLobby.subscribe(lobby => {
-        console.log("HandleComponent lobbyService.sharedLobby.subscribe()");
         this.lobby = <Lobby>lobby;
 
-        console.log(this.user);
-        console.log(this.lobby);
         if (this.user && this.lobby) {
           if (this.lobby.clients.includes(this.user.handle)) {
             this.userEvent.emit(this.user);

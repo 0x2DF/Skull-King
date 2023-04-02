@@ -82,7 +82,6 @@ io.on("connection", socket => {
             let lobby = Client.clients[socket.id].lobby;
             let handle = Client.clients[socket.id].handle;
             if (lobby != null && handle != null) {
-                console.log(`${handle} : ${data.message}`);
                 socket.to(lobby).emit(Triggers.messageBroadcast, {message : data.message, handle : handle});
             }
         }
@@ -187,7 +186,6 @@ io.on("connection", socket => {
         
         if ("game" in response) {
             io.to(response.game.details.code).emit(Triggers.refreshGame, response);
-            // console.log("game: ", response.game)
         }
     });
 
@@ -254,11 +252,9 @@ io.on("connection", socket => {
         }
         // Trick was already resolved, update game.
         if ("game" in response) {
-            console.log("game in response");
             io.to(response.game.details.code).emit(Triggers.refreshGame, {game : response.game});
         } else {
             // Respond with trick resolution data.
-            console.log(response);
             socket.emit(Triggers.getResolveTrick, response);
         }
         return;

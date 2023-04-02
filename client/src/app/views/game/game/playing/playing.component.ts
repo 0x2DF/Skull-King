@@ -16,8 +16,6 @@ export class PlayingComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeGame();
-    console.log("this.game");
-    console.log(this.game);
   }
 
   ngOnDestroy(): void {

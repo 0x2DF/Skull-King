@@ -17,8 +17,7 @@ export class PlayingResolveBendtComponent implements OnInit {
     });
   }
 
-  ngOnDestroy() {
-  }
+  ngOnDestroy() {}
 
   @Input() hand = <Card[]>([]);
   selected: Map<number, boolean> = new Map<number, boolean>();
@@ -56,7 +55,6 @@ export class PlayingResolveBendtComponent implements OnInit {
     });
 
     if (cards.length != this.MAX_SELECTED) {
-      console.log("Select 2 cards");
       return;
     }
 

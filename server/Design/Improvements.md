@@ -6,7 +6,9 @@
 + MISSING
 
 ## ERRORS
-+ White whale
++ blank -> numbered -> leading rule no longer applying
++ pirate -> skull king -> white whale -> wins white whale
++ Client errors
 + Refactor handle pirate cards
 + Verify points
 + Kraken shows player who played the card as winning, message is "null wins the trick"
@@ -33,6 +35,7 @@
     - Betting
     - Playing
     - Trick Resolution
++ Server toggling (local/heroku)
 
 ### Nice to have:
 + Disconnect
@@ -44,14 +47,13 @@
 + User experience
     - Errors/Messages handling w/toasts
     - Display list of played tricks in round details as a collapse with details of who played which trick and which trick won the round or is currently winning.
-    - When tigress is played, value is not explicit.
-+ Card Effect Handling
 + Remove console logs
 + Scoreboard
 
 ### Nice to have:
 + Betting
     - Player List (order and who has bet)
++ Remove # from URI
 
 # Brainstorming
 ## Card Concepts:

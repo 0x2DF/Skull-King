@@ -61,7 +61,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
   findLobby(): void {
     let href = this.router.url.replace('/game/','');
-    console.log(href);
     let lobby: Lobby = Lobby();
     lobby.code = href;
     this.lobbyService.findLobby(lobby);

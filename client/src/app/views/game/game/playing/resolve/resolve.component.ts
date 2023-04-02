@@ -18,8 +18,6 @@ export class PlayingResolveComponent implements OnInit {
     this.subscribeData();
     this.subscribeHand();
     this.gameService.listenResolveTrick();
-    console.log("this.game");
-    console.log(this.game);
   }
 
   ngOnDestroy() {
@@ -66,15 +64,12 @@ export class PlayingResolveComponent implements OnInit {
     if (!this.subscriptions["data"]) {
       this.dataSubscription = this.gameService.sharedData.subscribe(data => {
         this.data = <any>data;
-        console.log("this.data");
-        console.log(this.data);
       });
       this.subscriptions["data"] = true;
     }
   }
 
   handleResolveModalChange(event: any) {
-    console.log("handleResolveModalChange()");
     this.visible = event;
     if (this.visible == false) {
       this.gameService.resolveTrick(null);

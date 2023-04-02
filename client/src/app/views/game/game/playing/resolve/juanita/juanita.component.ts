@@ -11,13 +11,9 @@ export class PlayingResolveJuanitaComponent implements OnInit {
     private gameService: GameService
     ) { }
 
-  ngOnInit(): void {
-    console.log("this.data");
-    console.log(this.data);
-  }
+  ngOnInit(): void { }
 
-  ngOnDestroy() {
-  }
+  ngOnDestroy() { }
   
   @Input() data: any = <Card[]>([]);
 

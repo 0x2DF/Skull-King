@@ -10,14 +10,12 @@ export class PlayingResolveHarryComponent implements OnInit {
     private gameService: GameService
     ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
-  ngOnDestroy() {
-  }
+  ngOnDestroy() { }
 
-  bets: Array<String> = ["-1","0","+1"];
-  selected: Array<Boolean> = [false,false,false];
+  bets: Array<string> = ["-1","0","+1"];
+  selected: Array<boolean> = [false,false,false];
 
   betStringToNumber(bet: String): Number {
     if (bet === "-1") return -1;
@@ -29,7 +27,7 @@ export class PlayingResolveHarryComponent implements OnInit {
     let bet = "0";
     this.selected.forEach( (s, i) => {
       if (s == true) {
-        bet == this.bets[i];
+        bet = this.bets[i];
         return;
       }
     });

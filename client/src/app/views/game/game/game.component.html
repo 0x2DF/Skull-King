@@ -15,7 +15,7 @@
 </ng-template>
 
 <ng-template #playingSection>
-  <ng-container *ngIf= "game.details.state == 'playing' || game.details.state == 'trick-resolution' else scoreboardSection">
+  <ng-container *ngIf= "(game.details.state == 'playing' || game.details.state == 'trick-resolution') else scoreboardSection">
     <game-playing [game]="game" [user]="user"></game-playing>
   </ng-container>
 </ng-template>

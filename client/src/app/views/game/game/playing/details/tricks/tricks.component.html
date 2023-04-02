@@ -1,8 +1,8 @@
 <button cButton cOffcanvasToggle="Offcanvas">Tricks</button>
 
-<c-offcanvas placement="end" id="Offcanvas">
+<c-offcanvas placement="end" id="Offcanvas" [scroll]="true">
   <c-offcanvas-header>
-    <h5 cOffcanvasTitle>Round #{{game.details.round}}</h5>
+    <h5 cOffcanvasTitle>Round #{{game.details.round + 1}}</h5>
     <button
       cButtonClose
       class="text-reset"

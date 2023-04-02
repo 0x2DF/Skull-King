@@ -14,14 +14,12 @@ export class LobbyPlayersComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log("LobbyPlayersComponent ngOnInit()");
     this.subscribeLobby();
     this.refreshLobby();
   }
 
   ngOnDestroy(): void {
     this.lobbySubscription.unsubscribe();
-    console.log("LobbyPlayersComponent ngOnDestroy() lobbySubscription.unsubscribe()");
   }
 
   @Input() lobby: Lobby = Lobby();
@@ -32,12 +30,9 @@ export class LobbyPlayersComponent implements OnInit, OnDestroy {
   }
 
   subscribeLobby(): void {
-    console.log("LobbyPlayersComponent subscribeLobby()");
     if (!this.subscriptions["lobby"]) {
       this.lobbySubscription = this.lobbyService.sharedLobby.subscribe(lobby => {
-        console.log("LobbyPlayersComponent subscribeLobby() lobbyService.sharedLobby.subscribe");
         this.lobby = <Lobby>lobby;
-        console.log(this.lobby);
         this.refreshLobby();
       });
       this.subscriptions["lobby"] = true;
