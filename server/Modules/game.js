@@ -34,7 +34,7 @@ var GAME = (function() {
 
     const FIRST_ROUND = 0
     const FIRST_TRICK = 0
-    const ROUND_TOTAL = 1
+    const ROUND_TOTAL = 10
 
     // Error Codes & Messages.
     const _ERR_GAME_BET_OUT_OF_BOUNDS = "GameBetOutsideOfBounds";
