@@ -38,9 +38,6 @@
   <p align="center">
     Skull king remastered
     <br />
-    <!-- <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a> -->
-    <br />
-    <br />
     <a href="https://skull-king.onrender.com">View Demo</a>
     ·
     <a href="https://github.com/0x2DF/Skull-King/issues">Report Bug</a>
@@ -85,13 +82,12 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-
+  [![Product Name Screen Shot][product-screenshot]](https://skull-king.onrender.com)
 
 ### Built With
 
 * [![Angular][Angular.io]][Angular-url]
-* [![Node JS][Node.js]][nodejs-url]
-* [![Core UI][CoreUI.io]][coreui-url]
+* [![Node JS][Node.js]][Nodejs-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -229,3 +225,21 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 * []()
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/0x2DF/Skull-King.svg?style=for-the-badge
+[contributors-url]: https://github.com/0x2DF/Skull-King/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/0x2DF/Skull-King.svg?style=for-the-badge
+[forks-url]: https://github.com/0x2DF/Skull-King/network/members
+[stars-shield]: https://img.shields.io/github/stars/0x2DF/Skull-King.svg?style=for-the-badge
+[stars-url]: https://github.com/0x2DF/Skull-King/stargazers
+[issues-shield]: https://img.shields.io/github/issues/0x2DF/Skull-King.svg?style=for-the-badge
+[issues-url]: https://github.com/0x2DF/Skull-King/issues
+[license-shield]: https://img.shields.io/github/license/0x2DF/Skull-King.svg?style=for-the-badge
+[license-url]: https://github.com/0x2DF/Skull-King/blob/master/LICENSE.txt
+[product-screenshot]: images/screenshot.png
+[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
+[Angular-url]: https://angular.io/
+[Node.js]: https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white
+[Nodejs-url]: https://angular.io/
