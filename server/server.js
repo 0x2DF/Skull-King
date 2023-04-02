@@ -28,14 +28,14 @@ const TRIGGERS = require("./Models/Triggers");
 // #######
 
 const PORT = process.env.PORT || 3000;
-const INDEX = '/Public/skull-king/index.html';
+const INDEX = '../client/dist/skull-king/index.html';
 const express = require('express');
 const socketIO = require('socket.io');
 const path = require('path');
 const server = express()
-  .use(express.static(__dirname + '/Public/skull-king'))
+  .use(express.static(__dirname + '../client/dist/skull-king'))
   .get('/*', function(req,res) {
-    res.sendFile(path.join(__dirname+'/Public/skull-king/index.html'));})
+    res.sendFile(path.join(__dirname+'../client/dist/skull-king/index.html'));})
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 const io = socketIO(server);
 

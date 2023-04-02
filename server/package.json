@@ -1,16 +1,18 @@
 {
-  "name": "server",
-  "version": "1.0.0",
+  "name": "skull-king",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node server.js",
+    "build": "npm install"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^18.15.11",
     "coreui-angular-dev": "github:coreui/angular",
     "express": "^4.18.1",
     "node": "^17.7.2",

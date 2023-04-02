@@ -1,0 +1,12 @@
+{
+  "name": "Skull-King",
+  "version": "2.0.0",
+  "engines": {
+      "node": ">=18 <19"
+  },
+  "scripts": {
+      "start": "cd server && node app.js",
+      "prebuild": "cd server && npm run build",
+      "build": "cd client && npm run build"
+  }
+}
