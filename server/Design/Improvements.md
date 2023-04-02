@@ -1,6 +1,6 @@
 # Tasks
 ## README
-+ Re-write
++ Fill template
 
 ## TESTING
 + MISSING
